@@ -1,0 +1,3 @@
+[submodule "ipython-demo-tools"]
+	path = ipython-demo-tools
+	url = https://github.com/inducer/ipython-demo-tools.git
