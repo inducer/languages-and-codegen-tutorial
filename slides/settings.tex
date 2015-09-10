@@ -1,0 +1,65 @@
+%\batchmode
+\usepackage{kloeckislides}
+\nonstopmode
+
+\usepackage{pifont}
+
+\useoutertheme{split}
+\useinnertheme{rectangles}
+\usecolortheme{uiuc}
+\usetikzlibrary{arrows}
+
+\usepackage{ifthen}
+
+\pgfdeclareimage[height=0.8cm]{uiuc-logo}{uiuc-logo.pdf}
+\def\mylogotext{\pgfuseimage{uiuc-logo}\hspace*{0.3cm}}
+%\def\mylogotext{}
+
+\AtBeginSection[] {
+  \begin{frame}<beamer>
+  \frametitle{Outline}
+  \tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/show/hide]
+\end{frame}
+}
+\AtBeginSubsection[] {
+  \begin{frame}<beamer>
+  \frametitle{Outline}
+  \tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded/hide]
+\end{frame}
+}
+
+\definecolor{green}{RGB}{0, 180, 0}
+\definecolor{red}{RGB}{180, 0, 0}
+\colorlet{grellow}{green!50!yellow}
+\colorlet{codeback}{gray!20}
+
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\argmax}{argmax}
+
+
+\lstset{
+  language=Python,
+  alsolanguage=C,
+  rangebeginprefix=\#\ ,
+  rangeendprefix=\#\ ,
+  }
+
+\colorlet{input}{green!30}
+\colorlet{output}{red!30}
+\colorlet{intermed}{blue!30}
+
+\definecolor{fetch}{RGB}{227,110,35}
+\definecolor{alu}{RGB}{255,188,24}
+\definecolor{context}{RGB}{132,146,175}
+
+
+\setbeamertemplate{navigation symbols}{}
+
+\let\tmop=\operatorname
+
+\usepackage[normalem]{ulem}
+
+\def\curl{\operatorname{curl}}
+
+\def\checkmark{\textbf{\color{green}\ding{51}}}
+\def\crossmark{\textbf{\color{red}\ding{56}}}

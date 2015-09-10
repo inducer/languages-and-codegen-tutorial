@@ -1,0 +1,232 @@
+\def\simplesm{{
+  \node (fetch) [blk,fill=fetch] at (0,0) {Fetch/ Decode} ;
+  \begin{scope}[yshift=-1.25cm]
+  \foreach \x in {0,1,2,3}
+  \foreach \y in {1,0}
+  \draw [fill=alu,thick] (0.625*\x,0.5*\y) rectangle +(0.625,0.5);
+  \end{scope}
+  \node (pvt) [blk,fill=context, minimum height=2cm,below=1.5cm of fetch]
+  {32 kiB Ctx Private (``Registers'') };
+  \node (shared) [blk,fill=context,minimum height=1cm,below=0.2cm of pvt]
+  {16 kiB Ctx Shared };
+}}
+\def\drawprocassign#1#2#3{
+  \pgfmathtruncatemacro{\gj}{#1/4}
+  \pgfmathtruncatemacro{\gi}{#1-\gj*4}
+  \pgfmathtruncatemacro{\si}{#2/3}
+  \pgfmathtruncatemacro{\sj}{#2-\si*3}
+  \draw [->,ultra thick,#3] (g\gi\gj) ++(0.5,-0.5) ..controls +(0.3,1.2-0.2*\gi) and +(-0.5,0.5).. (sm\sj\si) ;
+}
+\begin{frame}{Connection: Hardware $\leftrightarrow$ Programming Model }
+  \hspace*{-3mm}
+  \begin{tikzpicture}[
+  blk/.style={draw,thick,text centered,anchor=south west,minimum width=2.5cm,text width=2cm,font=\small},
+  ]
+    \uncover<+-+(3)>{
+      \simplesm
+    }
+    \uncover<+->{
+      \begin{scope}[xshift=8cm]
+        \draw [thick,fill=black!20] (-0.5,0.5) rectangle +(3.5,-5.5)
+        coordinate (hwboxse);
+
+        \foreach \i in {0,1,2}
+        \foreach \j in {0,1,2}
+        {
+          \node at (\i,-\j*1.75) (sm\i\j) {
+            \begin{tikzpicture}[transform canvas={scale=0.25}]
+              \simplesm
+            \end{tikzpicture}
+          };
+        }
+      \end{scope}
+    }
+
+    \uncover<+>{
+      \node (smcircle) [circle,thick,draw,yshift=-0.45cm,xshift=0.3125cm,minimum
+      height=1.8cm] at (sm02) {};
+
+      \draw [line width=0.2ex,->] (smcircle) -- +(-4,1);
+    }
+
+    \uncover<+>{ % single core disappears
+    }
+    \uncover<+-+(2)>{
+        \node [rotate=20,font=\Large\bfseries,
+        cloud,cloud ignores aspect=true,cloud puffs=15,draw,thick,
+        text width=4cm, text centered,anchor=north
+        west,xshift=1cm,yshift=-1.25cm]
+        {Who cares how many cores? };
+    }
+    \uncover<+-+(1)>{ 
+      \node [anchor=west,draw,drop shadow,fill=white,
+      text width=0.5\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+      (prog-model-idea)
+      at (0,-4cm)
+        {
+          Idea:
+
+          \begin{itemize}
+            \item Program as if there were ``infinitely'' many cores
+            \item Program as if there were ``infinitely'' many ALUs per core
+          \end{itemize}
+        } ;
+    }
+    \uncover<+>{
+      \node [anchor=north west,xshift=0.3cm,yshift=-0.6cm, draw,drop shadow,fill=white,
+      text width=0.8\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+      at (prog-model-idea.north west)
+        {
+          Consider: Which is easy to do automatically?
+          \begin{itemize}
+            \item Parallel program $\rightarrow$ sequential hardware
+          \end{itemize}
+          or
+          \begin{itemize}
+            \item Sequential program $\rightarrow$ parallel hardware?
+          \end{itemize}
+
+        } ;
+    }
+    \uncover<+>{ % notes disappear
+    }
+    \uncover<+->{
+      \draw [thick,|->] (0,0.3) -- ++(3,0) 
+        node [anchor=west,font=\small] { Axis 0 };
+      \draw [thick,|->] (-0.3,0) -- ++(0,-2) 
+        node [anchor=east,font=\small,rotate=90] { Axis 1 };
+
+      \foreach \gi in {0,1,2,3}
+        \foreach \gj in {0,1,2}
+        {
+          \draw [very thick,fill=black!20] (\gi*1.75,\gj*-1.5) coordinate (g\gi\gj)
+            rectangle +(1.75,-1.5) ;
+          \foreach \li in {1,2,3,4,5,6}
+            \draw (g\gi\gj) ++(0.25*\li,0) -- +(0,-1.5) ;
+          \foreach \li in {1,2,3,4,5}
+            \draw (g\gi\gj) ++(0,-0.25*\li) -- +(1.75, 0) ;
+        }
+    }
+    \coordinate (gridcenter) at (3,-2.25);
+    \uncover<+->{
+      \node [below=1.5cm of sm12,font=\Large] (hwlabel) { Hardware };
+    }
+    \uncover<+->{
+      \node [below=2.5cm of gridcenter,font=\Large] (swreplabel)
+      { Software representation };
+    }
+    \only<+-+(2)>{
+      \node [font=\huge\bfseries,rotate=10, text width=5cm] at (3,-2.25) { Grid 
+
+      (Kernel: Function on Grid) };
+    }
+    \only<+-+(1)>{
+      \fill [black,opacity=0.3] (g00) rectangle (g11) ;
+      \node [font=\Large\bfseries,anchor=north west] at (g10) { (Work) Group};
+    }
+    \only<+>{
+      \fill [black,opacity=0.3] (g32) ++(0.5,-0.25) rectangle +(0.25,-0.25)
+      node [pos=0.5] (workitem) {};
+      \node [draw,thick,fill=white,font=\Large\bfseries,below=0.25 of
+        workitem, arrow box, arrow box arrows={north:0.5cm}] { (Work) Item};
+    }
+    \only<+>{}
+    \uncover<+>{
+      \draw [<->,line width=1mm] (gridcenter)
+      ..controls +(1,1) and +(-1,1)..
+      (sm11)
+      node [pos=0.6,anchor=south,yshift=0.5cm,font=\fontsize{40}{30}\bfseries] {?};
+    }
+    \only<+>{
+      \fill [black,opacity=0.3] (g00) rectangle (g11) ;
+      \drawprocassign{0}{0}{}
+    }
+    \only<+>{ \foreach \gnum in {0,1,2} { \drawprocassign{\gnum}{\gnum}{} } }
+    \only<+>{ \foreach \gnum in {0,1,...,8} { \drawprocassign{\gnum}{\gnum}{} } }
+    \only<+>{ \foreach \gnum in {0,1,...,8} { \drawprocassign{\gnum}{\gnum}{opacity=0.2} } }
+    \only<+>{
+      \foreach \gnum in {0,1,...,8}
+      {
+        \drawprocassign{\gnum}{\gnum}{opacity=0.2}
+        \pgfmathtruncatemacro{\gj}{\gnum/4}
+        \pgfmathtruncatemacro{\gi}{\gnum-\gj*4}
+        \foreach \id in {0,...,7}
+        {
+          \pgfmathtruncatemacro{\li}{\id/7}
+          \pgfmathtruncatemacro{\lj}{\id-\li*7}
+          \fill [black,opacity=0.3]
+            (g\gi\gj) ++ (0.25*\lj,-0.25*\li) rectangle +(0.25,-0.25);
+        }
+      }
+    }
+    \only<+>{
+      \foreach \gnum in {0,1,...,8}
+      {
+        \drawprocassign{\gnum}{\gnum}{opacity=0.2}
+        \pgfmathtruncatemacro{\gj}{\gnum/4}
+        \pgfmathtruncatemacro{\gi}{\gnum-\gj*4}
+        \foreach \id in {8,...,15}
+        {
+          \pgfmathtruncatemacro{\li}{\id/7}
+          \pgfmathtruncatemacro{\lj}{\id-\li*7}
+          \fill [black,opacity=0.3]
+            (g\gi\gj) ++ (0.25*\lj,-0.25*\li) rectangle +(0.25,-0.25);
+        }
+      }
+    }
+    \only<+-+(2)>{
+      \foreach \gnum in {0,1,...,8}
+      {
+        \drawprocassign{\gnum}{\gnum}{opacity=0.2}
+        \pgfmathtruncatemacro{\gj}{\gnum/4}
+        \pgfmathtruncatemacro{\gi}{\gnum-\gj*4}
+        \foreach \id in {16,...,23}
+        {
+          \pgfmathtruncatemacro{\li}{\id/7}
+          \pgfmathtruncatemacro{\lj}{\id-\li*7}
+          \fill [black,opacity=0.3]
+            (g\gi\gj) ++ (0.25*\lj,-0.25*\li) rectangle +(0.25,-0.25);
+        }
+      }
+    }
+    \uncover<+>{
+        \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
+        text width=0.4\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+          {
+            Really: Group provides pool of concurrency to draw from.
+
+            \medskip
+            X,Y,Z order \emph{within} group matters. (Not \emph{among}
+            groups, though.)
+          } ;
+    }
+    \only<+>{}
+    \only<+>{ \foreach \gnum in {9,10,11} { \drawprocassign{\gnum}{(\gnum-9)}{} } }
+    \only<+->{
+      \fill [black,opacity=0.3] (g20) ++(+0.75,-0.25) rectangle ++(0.25,-0.25)
+      coordinate [pos=0.5] (workitem2);
+      \node [draw,thick,fill=white,below=0.25 of
+        workitem2, arrow box, arrow box arrows={north:0.5cm},text width=0.85\textwidth] { 
+          \begin{itemize}
+            \item \texttt{get\_local\_id(axis)?/size(axis)?}
+            \item \texttt{get\_group\_id(axis)?/num\_groups(axis)?}
+            \item \texttt{get\_global\_id(axis)?/size(axis)?}
+          \end{itemize}
+          \texttt{axis=0,1,2,\dots}
+        };
+    }
+  \end{tikzpicture}
+
+  % ---------------------------------------------------------------------------
+  \uncover<+>{%
+    \begin{tikzpicture} [overlay]
+      \node [below right=1cm of current page.north west, draw,drop shadow,fill=white,
+      text width=0.6\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {
+          Grids can be 1,2,3-dimensional.
+        } ;
+    \end{tikzpicture}%
+  }
+\end{frame}
+
+

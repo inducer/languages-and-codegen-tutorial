@@ -1,0 +1,885 @@
+\documentclass[english,compress]{beamer}
+% {{{ preamble
+\input{settings}
+
+\logoenable
+
+\pgfdeclarelayer{grid}
+\pgfsetlayers{background,grid,main,foreground}
+\def\intd{\, d}
+
+\tikzset{%
+  input/.style={circle,fill=input,draw,thick,minimum height=4.5ex},
+  output/.style={circle,fill=output,draw,thick,minimum height=4.5ex},
+  func/.style={->,thick},
+}
+\def\bigncentered#1{
+  \begin{center}
+    \Huge\bfseries #1
+  \end{center}
+}
+\def\weblink#1#2{\href{#1}{\color{blue}\underline{#2}}}
+
+\begin{document}
+
+% -----------------------------------------------------------------------------
+% {{{ front matter
+% -----------------------------------------------------------------------------
+
+\title{Part 3: OpenCL}
+
+\author{Andreas Klöckner}
+
+\institute[Computer Science $\cdot$ UIUC]
+{Computer Science\\University of Illinois at Urbana-Champaign}
+
+\frame{
+  \titlepage
+}
+% }}}
+% -----------------------------------------------------------------------------
+\section{OpenCL}
+% {{{
+%\input{what-is-opencl-v2}
+
+% \newcommand{\khronoscredit}{
+%   \begin{tikzpicture}[overlay]
+%     \node [xshift=1cm,yshift=0.5cm]
+%       at (current page.south west)
+%       [font=\scriptsize,fill=gray!30,anchor=south west,opacity=0.5]
+%       {Credit: Khronos Group};
+%   \end{tikzpicture}
+% }
+% \def\khronosslide#1#2
+% {
+%   \begin{frame}{#1}
+%     \hspace*{-0.75cm}\includegraphics[viewport=2cm 0cm 31cm 14.5cm,clip=true,width=1.15\textwidth,page=#2]{opencl-overview.pdf}
+%     \khronoscredit
+%   \end{frame}
+% }
+% \begin{nologo}
+% \khronosslide{Who?}{4}
+% \khronosslide{When?}{5}
+% \khronosslide{Why?}{3}
+% \end{nologo}
+
+
+\begin{nologo}
+\begin{frame}{CL vs CUDA side-by-side}
+  \begin{columns}
+    \column{0.5\textwidth}
+      CUDA source code:
+      \lstinputlisting[basicstyle=\tiny]{transpose.cu}
+    \column{0.5\textwidth}
+      OpenCL source code:
+      \lstinputlisting[basicstyle=\tiny]{transpose.cl}
+  \end{columns}
+\end{frame}
+\end{nologo}
+
+\input{cuda-cl-dictionary}
+\input{cl-computing-as-a-service}
+%\input{gpu-cl-execution-model}
+%\input{why-gpu-scripting-v3}
+\input{cl-prog-model-hardware}
+% }}}
+% -----------------------------------------------------------------------------
+\section{PyOpenCL}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{frame}
+  \bigncentered{DEMO TIME}
+\end{frame}
+% }}}
+% -----------------------------------------------------------------------------
+\section[Runtime]{OpenCL runtime}
+% -----------------------------------------------------------------------------
+\subsection{A Kingdom of Nouns}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{frame}{OpenCL Object Diagram}
+  \begin{center}
+  \includegraphics[viewport=1.2in 4in 8.5in 10in,clip=true,page=20,height=0.7\textheight]{opencl-11.pdf}
+  \end{center}
+  \creditto{Credit: Khronos Group}
+\end{frame}
+
+\input{cl-platform}
+\input{cl-device}
+
+\input{cl-context-v2}
+\input{cl-command-queues}
+\input{cl-command-queue}
+
+\input{cl-compute-dag-v2}
+\input{cl-buffer-objects-v4}
+\input{cl-programs-and-kernels-v2}
+
+\begin{frame}{OpenCL Object Diagram}
+  \begin{center}
+  \includegraphics[viewport=1.2in 4in 8.5in 10in,clip=true,page=20,height=0.7\textheight]{opencl-11.pdf}
+  \end{center}
+  \creditto{Credit: Khronos Group}
+\end{frame}
+% }}}
+% -----------------------------------------------------------------------------
+\subsection{Synchronization}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{nologo}
+\begin{frame}{Recap: Concurrency and Synchronization}
+  \uncover<+->{
+    \begin{beamercolorbox}[sep=3mm]{block body}
+      GPUs have layers of concurrency.\\
+      \hfill Each layer has its synchronization primitives.
+    \end{beamercolorbox}
+  }
+  \bigskip
+  \begin{columns}[c]
+    \column{0.6\textwidth}
+      \uncover<+->{
+        \begin{itemize}
+          \item Intra-group:\\ 
+            \texttt{barrier(\dots)}, \\
+            %\texttt{mem\_fence(\dots)}\\
+            \texttt{\dots} =
+            \texttt{CLK\_\{LOCAL,GLOBAL\}\_MEM\_FENCE}
+          \item Inter-group:\\ Kernel launch
+          \item CPU-GPU:\\ Command queues, Events
+        \end{itemize}
+      }
+    \column{0.35\textwidth}
+      \includegraphics[width=\textwidth]{onion.jpeg}
+  \end{columns}
+
+\end{frame}
+\end{nologo}
+\addimgcredit{Onions: flickr.com/darwinbell \cc}
+% -----------------------------------------------------------------------------
+\begin{frame}{Synchronization between Groups}
+  \begin{block}<+->{Golden Rule:}
+    Results of the algorithm must be independent of the order in which
+    work groups are executed.
+  \end{block}
+
+  \uncover<+->{%
+  \textbf{Consequences:}
+  \begin{itemize}
+    \item Work groups may read the same information from global memory.
+    \item But: Two work groups may not validly write different things to
+      the same global memory.
+    \item Kernel launch serves as
+      \begin{itemize}
+        \item Global barrier
+        \item Global memory fence
+      \end{itemize}
+  \end{itemize}
+  }
+\end{frame}
+\input{barrier}
+%\input{memory-fence}
+% }}}
+
+% -----------------------------------------------------------------------------
+\section[Patterns]{Parallel patterns}
+% -----------------------------------------------------------------------------
+\subsection{Map}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{frame}{Map}
+  \uncover<+>{}
+  {\Huge
+  \[
+    y_i = f_i(x_i)
+  \]}%
+  where $i\in\{1,\dots,N\}$.
+
+  \medskip
+  Notation: (also for rest of this lecture)
+  \begin{itemize}
+    \item $x_i$: inputs
+    \item $y_i$: outputs
+    \item $f_i$: (pure) functions (i.e. \emph{no side effects})
+  \end{itemize}
+
+  \medskip
+  \uncover<+>{
+    \begin{tikzpicture} [overlay]
+      \node [below left=1cm of current page.north east, draw,drop shadow,fill=white,
+      text width=0.75\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {
+          When does a function have a ``side effect''?
+
+          \bigskip
+          In addition to producing a value, it 
+          \begin{itemize}
+          \item modifies non-local state, or
+          \item has an observable interaction with the outside world.
+          \end{itemize}
+        } ;
+    \end{tikzpicture}
+  }%
+  \uncover<+(1)->{
+  Often: $f_1=\dots=f_N$. Then
+  \begin{itemize}
+    \item Python function \texttt{map}
+    %\item C++ STL \texttt{std::transform}
+  \end{itemize}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Map: Graph Representation}
+  \begin{center}
+    \begin{tikzpicture}
+      \foreach \i in {0,1,...,8}
+      {
+        \node [input] at (\i, 0) (x\i) { $x_{\i}$ };
+        \node [output] at (\i, -2) (y\i) { $y_{\i}$ };
+        \draw [func] (x\i) -- (y\i) node [pos=0.5,anchor=east] {$f_{\i}$};
+      }
+    \end{tikzpicture}
+  \end{center}
+  \uncover<2>{
+    \begin{tikzpicture} [overlay]
+      \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
+      text width=0.4\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {
+          Trivial? Often: no.
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Embarrassingly Parallel: Examples}
+  \begin{columns}
+    \column{0.6\textwidth}
+      Surprisingly useful:
+      \begin{itemize}
+        \item Element-wise linear algebra: 
+
+          Addition, scalar
+          multiplication (\emph{not} inner product)
+        \item Image Processing: Shift, rotate, clip, scale, \dots
+        \item Monte Carlo simulation
+        \item (Brute-force) Optimization
+        \item Random Number Generation
+        \item Encryption, Compression
+
+          (after blocking)
+        %\item Software compilation
+          %\subitem{\texttt{make -j8}}
+      \end{itemize}
+    \column{0.4\textwidth}
+      \includegraphics[width=\textwidth]{parallel-field.jpeg}
+  \end{columns}
+  % \uncover<2>{
+  %   \begin{tikzpicture} [overlay]
+  %     \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
+  %     text width=0.5\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+  %       {
+  %         But: Still needs a minimum of coordination. How can that be
+  %         achieved?
+  %       } ;
+  %   \end{tikzpicture}
+  % }
+\end{frame}
+\addimgcredit{Field: sxc.hu/mzacha}
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \bigncentered{DEMO TIME}
+\end{frame}
+% }}}
+% -----------------------------------------------------------------------------
+\subsection{Reduce}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{frame}{Reduction}
+
+  {\Huge
+  \[
+    y =  f(\cdots f(f(x_1, x_2), x_3), \dots ,x_N)
+  \]}
+  where $N$ is the input size.
+
+  \pause
+  \medskip
+  Also known as\dots
+  \begin{itemize}
+    \item Python function \texttt{reduce}% (Scheme: \texttt{fold})
+    %\item C++ STL \texttt{std::accumulate}
+  \end{itemize}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Reduction: Graph}
+  \begin{center}
+    \begin{tikzpicture}[grow'=up,every path/.style={func,<-},level distance=1cm]
+      \node [output] {$y$}
+      child {
+        node [input,fill=output!80!input] {}
+        {
+          child {
+            node [input,fill=output!60!input] {}
+            {
+              child {
+                node [input,fill=output!40!input] {}
+                {
+                  child {
+                    node [input,fill=output!20!input] {}
+                    {
+                      child {node [input] {$x_1$} }
+                      child {node [input] {$x_2$} }
+                    }
+                  }
+                  child {node [input] {$x_3$} }
+                }
+              }
+              child {node [input] {$x_4$} }
+            }
+          }
+          child {node [input] {$x_5$} }
+        }
+      }
+      child { node [input] {$x_6$} }
+      ;
+    \end{tikzpicture}
+  \end{center}
+  \uncover<2>{
+    \begin{tikzpicture} [overlay]
+      \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
+      inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {
+          Painful! Not parallelizable.
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Approach to Reduction}
+  \begin{columns}
+    \column{0.4\textwidth}
+      \tikz
+        \node [rotate=40,font=\Huge\bfseries,
+        cloud,cloud ignores aspect=true,cloud puffs=15,draw,thick]
+        {{ $\mathit{f(x,y)}$?}};
+    \column{0.6\textwidth}
+      Can we do better?
+
+      \medskip
+      ``Tree'' very imbalanced. What property of $f$ would allow
+      `rebalancing'?
+
+      \pause
+      \medskip
+      \[
+      f(f(x,y), z)=f(x,f(y,z))
+      \]
+      Looks less improbable if we let $x\circ y= f(x,y)$:
+      \[
+      x \circ(y\circ z))=(x \circ y) \circ z
+      \]
+      Has a very familiar name: \emph{Associativity}
+  \end{columns}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Reduction: A Better Graph}
+  \begin{center}
+    \begin{tikzpicture}[grow'=up,every path/.style={func,<-},level distance=1cm,
+      level 1/.style={sibling distance=4cm},
+      level 2/.style={sibling distance=2cm},
+      level 3/.style={sibling distance=1cm},
+      ]
+      \node [output] {$y$}
+      child {
+        node [input,fill=output!60!input] {}
+        child {
+          node [input,fill=output!40!input] {}
+          child { node [input] {$x_0$} }
+          child { node [input] {$x_1$} }
+        }
+        child {
+          node [input,fill=output!40!input] {}
+          child { node [input] {$x_2$} }
+          child { node [input] {$x_3$} }
+        }
+      }
+      child {
+        node [input,fill=output!60!input] {}
+        child {
+          node [input,fill=output!40!input] {}
+          child { node [input] {$x_4$} }
+          child { node [input] {$x_5$} }
+        }
+        child {
+          node [input,fill=output!40!input] {}
+          child { node [input] {$x_6$} }
+          child { node [input] {$x_7$} }
+        }
+      }
+      ;
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Reduction: Examples}
+  \begin{columns}
+    \column{0.6\textwidth}
+      \begin{itemize}
+        \item Sum, Inner Product, Norm
+          \subitem{Occurs in iterative methods}
+        \item Minimum, Maximum
+        \item Data Analysis
+          \subitem{Evaluation of Monte Carlo Simulations}
+        \item List Concatenation, Set Union
+        \item Matrix-Vector product (but\dots)
+      \end{itemize}
+    \column{0.4\textwidth}
+      \includegraphics[width=\textwidth]{tree.jpeg}
+  \end{columns}
+\end{frame}
+\addimgcredit{Tree: sxc.hu/bertvthul}
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \bigncentered{DEMO TIME}
+\end{frame}
+% }}}
+% -----------------------------------------------------------------------------
+\subsection{Scan}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{frame}{Scan}
+
+  {\Huge
+  \vspace*{-1cm}
+  \begin{align*}
+    y_1 &= x_1 \\
+    y_2 &= f(y_1, x_2)\\
+    \vdots &= \vdots \\
+    y_N &= f(y_{N-1}, x_N)
+  \end{align*}}
+  where $N$ is the input size. (Think: $N$ large, $f(x,y)=x+y$)
+
+  \begin{itemize}
+    \item Prefix Sum/Cumulative Sum
+    \item Abstract view of: loop-carried dependence
+    \item Also possible: Segmented Scan
+  \end{itemize}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Scan: Graph}
+  \begin{center}
+    \begin{tikzpicture}[
+      intermed/.style={input,fill=intermed},
+      ffunc/.style={func,
+        execute at end to={ node [left] {$f$}}
+        },
+      ]
+      \foreach \i in {0,1,...,5}
+      {
+        \node [input] at (\i, 0) (x\i) { $x_{\i}$ };
+        \node [output] at (\i, -6) (y\i) { $y_{\i}$ };
+      }
+      \foreach \i in {1,...,5}
+      {
+        \pgfmathtruncatemacro{\iminusone}{\i-1}
+        \node [intermed] at (\i, -\i) (m\i) { $y_{\i}$ };
+        \draw [func] (m\i) -- (y\i) node [pos=0.5,anchor=east] {Id};
+        \draw [func] (x\i) -- (m\i) ;
+      }
+      \foreach \i in {2,...,5}
+      {
+        \pgfmathtruncatemacro{\iminusone}{\i-1}
+        \draw [func] (m\iminusone) -- (m\i) ;
+      }
+      \draw [ffunc] (x0) -- (m1) ;
+      \draw [func] (x0) -- (y0) node [pos=0.5,anchor=east] {Id};
+    \end{tikzpicture}
+  \end{center}
+  \uncover<2->{
+    \begin{tikzpicture} [overlay]
+      \node [below left=1cm of current page.north east, draw,drop shadow,fill=white,
+      text width=0.6\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {
+          This can't possibly be parallelized.
+
+          Or can it?
+
+          \only<3>{Again: Need assumptions on $f$.\\
+          Associativity, commutativity.}
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Scan: Implementation}
+  \begin{center}
+    \begin{tikzpicture}[y=-1cm,scale=0.5]
+      \foreach \i in {0,...,4}
+      {
+        \pgfmathtruncatemacro{\pwr}{2^\i}
+        \pgfmathtruncatemacro{\nmpwr}{15-\pwr}
+        \foreach \j in {0,...,15}
+          \draw [fill=intermed,thick,draw] (\j,2*\i) rectangle +(1,1);
+        \ifthenelse{\equal{\i}{4}}{}{
+          \foreach \j in {\pwr,...,15}
+            \draw [func] (\j,2*\i) ++(0.5,1) -- ++(0,1);
+          \foreach \j in {0,...,\nmpwr}
+            \draw [func] (\j,2*\i) ++(0.5,1) -- ++(\pwr,1);
+        }
+      }
+    \end{tikzpicture}
+  \end{center}
+  \uncover<2->{
+    \begin{tikzpicture} [overlay]
+      \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
+      inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {
+          Work-efficient?
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{comment}
+\begin{frame}{Scan: Implementation II}
+  \begin{columns}
+    \column{0.7\textwidth}
+      Two sweeps: Upward, downward, \\
+      both tree-shape
+
+      \bigskip
+      On upward sweep:
+      \begin{itemize}
+        \item Get values \texttt{L} and \texttt{R} from left and right child
+        \item Save $L$ in local variable \texttt{Mine}
+        \item Compute $\texttt{Tmp}=\texttt{L}+\texttt{R}$
+          and pass to parent
+      \end{itemize}
+
+      On downward sweep:
+      \begin{itemize}
+        \item Get value $\texttt{Tmp}$ from parent
+        \item Send $\texttt{Tmp}$ to left child
+        \item Sent $\texttt{Tmp+Mine}$ to right child
+      \end{itemize}
+    \column{0.3\textwidth}
+      \begin{tikzpicture}[
+      grow=up,
+      every node/.style={circle,fill=intermed,draw,thick, minimum width=0.4cm},
+      every path/.style={func,<-},
+      level distance=0.75cm,
+      level 1/.style={sibling distance=1cm},
+      level 2/.style={sibling distance=0.5cm},
+      ]
+        \node {}
+        child {
+          node {}
+          child { node {} }
+          child { node {} }
+        }
+        child {
+          node {}
+          child { node {} }
+          child { node {} }
+        }
+        ;
+      \end{tikzpicture}
+
+      \bigskip
+      \begin{tikzpicture}[
+      grow=down,
+      every node/.style={circle,fill=intermed,draw,thick, minimum width=0.4cm},
+      every path/.style={func,->},
+      level distance=0.75cm,
+      level 1/.style={sibling distance=1cm},
+      level 2/.style={sibling distance=0.5cm},
+      ]
+        \node {}
+        child {
+          node {}
+          child { node {} }
+          child { node {} }
+        }
+        child {
+          node {}
+          child { node {} }
+          child { node {} }
+        }
+        ;
+      \end{tikzpicture}
+  \end{columns}
+  \uncover<2->{
+    \begin{tikzpicture} [overlay]
+      \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
+      text width=0.6\textwidth,inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {
+          Work-efficient?
+
+          %Span rel. to first attempt?
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+\end{comment}
+% -----------------------------------------------------------------------------
+\begin{frame}{Scan: Examples}
+  \begin{columns}
+    \column{0.6\textwidth}
+
+      Low-level building block for many higher-level algorithms
+      algorithms
+
+      \begin{itemize}
+        \item Index computations (!)
+          \subitem{E.g. sorting}
+        \item Anything with a loop-carried dependence
+        %\item One row of Gauss-Seidel
+        \item One row of triangular solve
+        \item Segment numbering if boundaries are known
+        \item FIR/IIR Filtering
+        \item G.E.~Blelloch:
+        \weblink{http://www.cs.cmu.edu/~guyb/papers/Ble93.pdf}{Prefix Sums and their Applications}
+      \end{itemize}
+
+    \column{0.3\textwidth}
+      \includegraphics[width=\textwidth]{radar.png}
+  \end{columns}
+\end{frame}
+\addimgcredit{Radar: sxc.hu/KimPouss}
+% -----------------------------------------------------------------------------
+\begin{frame}{Scan: Issues}
+  \begin{columns}
+    \column{0.3\textwidth}
+      \includegraphics[width=\textwidth]{question-mark.png}
+    \column{0.6\textwidth}
+      \begin{itemize}
+        \item Subtlety: Inclusive/Exclusive Scan
+        \item Pattern sometimes hard to recognize
+          \begin{itemize}
+            \item But shows up surprisingly often
+            \item Need to prove associativity/commutativity
+          \end{itemize}
+        %\item Useful in Implementation: algorithm cascading
+          %\subitem{Do sequential scan on parts, then parallelize at
+          %coarser granularities}
+      \end{itemize}
+  \end{columns}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \bigncentered{DEMO TIME}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Scan: Features}
+  \begin{columns}
+    \column{0.6\textwidth}
+    \begin{itemize}
+      \item ``Map'' processing on input: $f(x_i)$
+        \subitem{Also: stencils $f(x_{i-1}, x_i)$}
+      \item ``Map'' processing on output
+        \begin{itemize}
+          \item Output stencils
+          \item Inclusive/Exclusive scan
+        \end{itemize}
+      \item Segmented scan
+      \item Works on compound types
+      \item Efficient!
+    \end{itemize}
+    \column{0.4\textwidth}
+      \colorlet{input}{green!30}
+      \colorlet{output}{red!30}
+      \colorlet{intermed}{blue!30}
+
+      \tikzset{
+        input/.style={circle,fill=input,draw,thick},
+        output/.style={circle,fill=output,draw,thick},
+        func/.style={->,thick},
+      }
+      \begin{tikzpicture}[
+        scale=0.5,
+        intermed/.style={input,fill=intermed},
+        ffunc/.style={func,
+          execute at end to={ node [left] {$f$}}
+          },
+        ]
+        \foreach \i in {0,1,...,5}
+        {
+          \node [input] at (\i, 0) (x\i) {  };
+          \node [output] at (\i, -6) (y\i) {  };
+        }
+        \foreach \i in {1,...,5}
+        {
+          \pgfmathtruncatemacro{\iminusone}{\i-1}
+          \node [intermed] at (\i, -\i) (m\i) { };
+          \draw [func] (m\i) -- (y\i) ;
+          \draw [func] (x\i) -- (m\i) ;
+        }
+        \foreach \i in {2,...,5}
+        {
+          \pgfmathtruncatemacro{\iminusone}{\i-1}
+          \draw [func] (m\iminusone) -- (m\i) ;
+        }
+        \draw [ffunc] (x0) -- (m1) ;
+        \draw [func] (x0) -- (y0) ;
+      \end{tikzpicture}
+  \end{columns}
+  \uncover<+->{}
+  \uncover<+->{
+    \begin{tikzpicture} [overlay]
+      \node [above left=7mm of current page.south east,
+      draw,drop shadow,fill=white,inner sep=5mm,thick,
+      text width=0.6\textwidth]
+        {
+          Scan: a \textbf{fundamental} parallel primitive.
+
+          \bigskip
+
+          Anything involving index changes/renumbering!
+
+          (e.g. sort, filter, \dots)
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Scan: More Algorithms}
+  \begin{itemize}
+    \item \texttt{copy\_if}
+    \item \texttt{remove\_if}
+    \item \texttt{partition}
+    \item \texttt{unique}
+    \item \texttt{sort} (plain and key-value)
+    \item \texttt{build\_list\_of\_lists}
+    \item \texttt{bin\_sort}
+  \end{itemize}
+  All in \texttt{pyopencl}, all built on scan.
+\end{frame}
+% }}}
+
+% -----------------------------------------------------------------------------
+\section[Code gen.]{Code writes Code}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{frame}{Code generation}
+  Three main ways to generate code:
+  \begin{itemize}
+    \item Textual substitution
+    \item Templating
+    \item Abstract syntax trees
+  \end{itemize}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \bigncentered{DEMO TIME}
+\end{frame}
+% }}}
+% -----------------------------------------------------------------------------
+\section[]{OpenCL implementations}
+% -----------------------------------------------------------------------------
+% {{{
+
+\begin{frame}{The Nvidia CL implementation}
+  \begin{columns}
+    \column{0.4\textwidth}
+      \includegraphics[width=\textwidth]{nvidia.pdf}
+    \column{0.7\textwidth}
+      Targets only GPUs
+
+      \medskip
+      Notes:
+      \begin{itemize}
+        \item Nearly identical to CUDA
+          \subitem{No native C-level JIT in CUDA ($\rightarrow$ PyCUDA)}
+        \item Page-locked memory:\\
+          Use \texttt{CL\_MEM\_ALLOC\_HOST\_PTR}.\\
+          (Careful: double meaning)
+      \end{itemize}
+  \end{columns}
+\end{frame}
+\addimgcredit{Nvidia logo: Nvidia Corporation}
+\begin{frame}{The Apple CL implementation}
+  \begin{columns}
+    \column{0.6\textwidth}
+      Targets CPUs and GPUs
+
+      \medskip
+      General notes:
+      \begin{itemize}
+        \item Different header name\\
+          \texttt{OpenCL/cl.h} instead of \texttt{CL/cl.h}\\
+          Use \texttt{-framework OpenCL} for C access.
+        \item Beware of imperfect compiler cache implementation\\
+          (ignores include files)
+      \end{itemize}
+      CPU notes:
+      \begin{itemize}
+        \item One work item per processor
+      \end{itemize}
+      GPU similar to hardware vendor implementation.\\
+      (New: Intel w/ Sandy Bridge)
+    \column{0.2\textwidth}
+      \includegraphics[width=\textwidth]{apple-logo.pdf}
+  \end{columns}
+\end{frame}
+\addimgcredit{Apple logo: Apple Corporation}
+
+\begin{frame}{The AMD CL implementation}
+  \begin{columns}
+    \column{0.1\textwidth}
+      \includegraphics[height=\textwidth,angle=90]{amd-logo.pdf}
+    \column{0.85\textwidth}
+      Targets CPUs and GPUs (from both AMD and Nvidia)
+
+      \medskip
+      GPU notes:
+      \begin{itemize}
+        \item Wide SIMD groups (64)
+        \item GCN: Vector \emph{and} scalar unit (previously VLIW4/5)
+        \begin{itemize}
+          \item \emph{very} flop-heavy machine
+          \item $\rightarrow$ ILP and explicit SIMD
+          %\item Non-vector memory coalescing only on Cayman+
+        \end{itemize}
+      \end{itemize}
+
+      CPU notes:
+      \begin{itemize}
+        \item Many work items per processor (emulated)
+        \item ``APU'': Growing CPU/GPU integration
+      \end{itemize}
+  \end{columns}
+\end{frame}
+\addimgcredit{AMD logo: AMD Corporation}
+
+\begin{frame}{The Intel CL implementation}
+  \begin{columns}
+    \column{0.75\textwidth}
+      CPUs, GPUs with Ivy Bridge+
+
+      \medskip
+      CPU notes:
+      \begin{itemize}
+        \item Good vectorizing compiler
+        \item Only implementation of out-of-order queues for now
+        \item Based on Intel TBB
+      \end{itemize}
+      GPU notes:
+      \begin{itemize}
+        \item Flexible design: SIMD$m$ VLIW$n$
+        \item Lots of fixed-function hardware
+        \item Last-level Cache (LLC) integrated between CPU and GPU
+      \end{itemize}
+
+    \column{0.25\textwidth}
+      \includegraphics[width=\textwidth]{intel-logo.pdf}
+  \end{columns}
+\end{frame}
+\addimgcredit{Intel logo: Intel Corporation}
+% }}}
+
+% -----------------------------------------------------------------------------
+\questionframe{}
+% -----------------------------------------------------------------------------
+% }}}
+\end{document}
+
+% vim: foldmethod=marker
