@@ -1,0 +1,205 @@
+\documentclass[english,compress]{beamer}
+% {{{ preamble
+\input{settings}
+
+\logoenable
+
+\pgfdeclarelayer{grid}
+\pgfsetlayers{background,grid,main,foreground}
+\def\intd{\, d}
+
+\tikzset{%
+  input/.style={circle,fill=input,draw,thick,minimum height=4.5ex},
+  output/.style={circle,fill=output,draw,thick,minimum height=4.5ex},
+  func/.style={->,thick},
+}
+\def\bigncentered#1{
+  \begin{center}
+    \Huge\bfseries #1
+  \end{center}
+}
+\def\weblink#1#2{\href{#1}{\color{blue}\underline{#2}}}
+
+\begin{document}
+
+% -----------------------------------------------------------------------------
+% {{{ front matter
+% -----------------------------------------------------------------------------
+
+\title{Part 1: Introduction}
+
+\author{Andreas Klöckner}
+
+\institute[Computer Science $\cdot$ UIUC]
+{Computer Science\\University of Illinois at Urbana-Champaign}
+
+\date{}
+
+\frame{
+  \titlepage
+}
+% }}}
+% -----------------------------------------------------------------------------
+\section{Outline}
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{itemize}
+    \setlength{\itemsep}{0.0in}
+    \item Introduction
+      \begin{itemize}
+        \item Why Python?
+        \item IPython
+        \item Python
+        \item \texttt{numpy}
+      \end{itemize}
+    \item Building languages
+      \begin{itemize}
+        \item Syntax trees
+        \item Expression languages
+        \item Operations on expression trees
+        \item A first glimpse of code generation
+      \end{itemize}
+    \item OpenCL as a vehicle for code generation
+      \begin{itemize}
+        \item Execution model
+        \item OpenCL + Python
+        \item High-performance primitives
+      \end{itemize}
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \begin{itemize}
+    \item Case studies
+      \begin{itemize}
+        \item \texttt{numpy}: broadcasting
+        \item \texttt{numpy}: \texttt{einsum}
+        \item UFL
+      \end{itemize}
+    \item Generating C
+      \begin{itemize}
+        \item Using templating engines
+        \item Types and hybrid code
+        \item Structured code generation (ASTs)
+      \end{itemize}
+    \item Code generation via Loopy
+      \begin{itemize}
+        \item Loop polyhedra
+        \item Instructions and ordering
+        \item Loop transformation, and data layout
+        \item Generating instructions from DSLs
+      \end{itemize}
+    \end{itemize}
+  \end{columns}
+\end{frame}
+% -----------------------------------------------------------------------------
+\section{Goals}
+% -----------------------------------------------------------------------------
+\begin{frame}{Abstractions}
+  What is an abstraction?
+
+  \begin{quote}
+    Something that turns details into data.
+  \end{quote}
+
+  What's lost by not using abstractions?
+  \begin{quote}
+    Flexibility --- you can tolerate changing
+    details
+  \end{quote}
+
+  Where are abstractions helpful?
+  \begin{itemize}
+    \item Code transformations
+    \item Targeting vendor implementations
+    \item (Modelling)
+  \end{itemize}
+
+  \medskip
+  Where do you stop abstracting?
+  \begin{itemize}
+    \item As close to the bare numerics as
+      possible
+
+      (\emph{perhaps} specified as \emph{simple} loop-y Fortran)
+    \item At the machine model (JIT + Cores + Wide vectors)
+  \end{itemize}
+  \uncover<+->{}
+  \uncover<+->{%
+    \begin{tikzpicture} [overlay]
+      \node [below left=1cm of current page.north east, draw,drop shadow,fill=white,
+      inner xsep=0.5cm,inner ysep=0.5cm,thick, text
+      width=0.7\textwidth]
+        {%
+          \textbf{`Don't be limited by what's available.'}
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Goals}
+  \begin{itemize}
+    \item Build Mathematically-oriented mini-languages (`DSLs')
+    \item Apply domain-specific optimizations and transformations
+    \item Leverage tools to generate GPU/multi-core code from DSL
+    \item Create glue that ties components together
+  \end{itemize}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Setting}
+  High-performance code is \textbf{challenging}:
+  \begin{itemize}
+    \item designed to push machines, models, and methods to the limits
+      of their capabilities
+
+    \item often put together on a (comparatively) shoestring budget
+
+    \item often repurposed $\rightarrow$ high demands on
+    flexibility
+  \end{itemize}
+
+\end{frame}
+% -----------------------------------------------------------------------------
+\section{Why Python?}
+% -----------------------------------------------------------------------------
+\begin{frame}{Why Python?}
+  \uncover<+->{
+    Python: One example of a modern scripting language
+  }
+  \medskip
+
+  \begin{columns}[c]
+    \column{0.6\textwidth}
+    \begin{itemize}
+      \item Mature
+      \item Large and active community
+      \item Emphasizes readability
+      \item Written in widely-portable C
+      \item A `multi-paradigm' language
+      \item Rich ecosystem of sci-comp related software
+    \end{itemize}
+
+    \column{0.3\textwidth}
+    \includegraphics[width=\textwidth]{python-logo-no-shadow.png}
+  \end{columns}
+\end{frame}
+\addimgcredit{Python logo: python.org}
+% -----------------------------------------------------------------------------
+\begin{frame}{Why Python for HPC?}
+  Python is unique as an HPC language:
+  \begin{itemize}
+  \item approachable
+  \item safe
+  \item gentle learning curve
+  \item principled
+  \item performant enough for large, complicated systems
+  \end{itemize}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \bigncentered{DEMO TIME}
+\end{frame}
+% }}}
+
+\end{document}

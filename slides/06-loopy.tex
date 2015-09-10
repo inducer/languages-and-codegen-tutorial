@@ -1,0 +1,212 @@
+\documentclass[english,compress]{beamer}
+\nonstopmode%
+\input{settings}
+
+\logoenable%
+
+\pgfdeclarelayer{grid}
+\pgfsetlayers{background,grid,main,foreground}
+\def\intd{\, d}
+
+\def\bigncentered#1{
+  \begin{center}
+    \Huge\bfseries #1
+  \end{center}
+}
+
+\begin{document}
+
+\title{%
+   Part 6: Loopy
+}
+
+\institute{Computer Science $\cdot$ University of Illinois at
+Urbana-Champaign}
+
+\author{Andreas Klöckner}
+
+\date{}
+
+\frame{\titlepage}
+
+% \begin{frame}{Thanks}
+% 
+%   \begin{itemize}
+%   \item Tim Warburton (Rice)
+%   \item Lucas Wilcox (NPS)
+%   \item Leslie Greengard (NYU)
+%   \item Early adopters (Rob Kirby, Maxim Kuznetsov, Ivan Oseledets)
+%   %\item PyOpenCL, PyCUDA contributors
+%   \item AMD, Nvidia
+%   \end{itemize}
+% 
+% \end{frame}
+% -----------------------------------------------------------------------------
+\section[Loo.py]{Loop Generation}
+% -----------------------------------------------------------------------------
+\subsection{Loo.py}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{frame}{Automating GPU Programming}
+  \begin{beamercolorbox}[sep=3mm]{block body}
+    High-performance programming can be a time-consuming trial-and-error
+    process.
+  \end{beamercolorbox}
+  Obvious idea: Let the computer do it. How?
+  \begin{itemize}
+    \item One way: ``Smart'' compiler, ``dumb'' developer
+      \begin{itemize}
+        \item GPU programming requires complex tradeoffs
+        \item Tradeoffs require heuristics
+        \item Heuristics are fragile
+      \end{itemize}
+    \item Another way: ``Smart'' developer, ``dumb'' compiler
+      \begin{itemize}
+        \item Error-prone
+        \item Expensive in developer time
+        \item User can use manual/automatic tuning
+      \end{itemize}
+  \end{itemize}
+  \uncover<2->{%
+    \begin{tikzpicture} [overlay]
+      \node at (current page.center) [draw,drop shadow,fill=white,
+      inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {%
+          So compromise!
+
+          Following: an idea of a compromise.
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Setting the Stage}
+  \begin{columns}
+    \column{0.55\textwidth}
+      Idea: Create IR + library of transformations
+      \begin{itemize}
+        \item Start with math-y statement of the operation
+        \item ``Push a few buttons'' to optimize for the target
+          device
+        \item Strongly separate these two parts
+      \end{itemize}
+
+      \medskip
+      Philosophy:
+      \begin{itemize}
+        \item Avoid ``intelligence''
+        \item User can assume partial responsibility for correctness
+        \item Embedding in Python provides generation/transform
+          flexibility
+      \end{itemize}
+    \column{0.45\textwidth}
+      \includegraphics[width=\textwidth]{loopy-crop.pdf}
+  \end{columns}
+  \uncover<2>{%
+    \begin{tikzpicture} [overlay]
+      \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
+      inner xsep=0.5cm,inner ysep=0.5cm,thick, text
+      width=0.7\textwidth]
+        {%
+          Loopy is infrastructure.
+
+          \medskip
+          Auto-tuners and domain-specific
+          libraries are ``above'' loopy conceptually.
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \bigncentered{DEMO TIME}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Capturing Variants}
+  \lstinputlisting[basicstyle=\scriptsize]{loopy-variants.py}
+  \uncover<2>{%
+    \begin{tikzpicture} [overlay]
+      \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
+      inner xsep=0.5cm,inner ysep=0.5cm,thick,
+      text width=0.5\textwidth]
+        {%
+          Easy to \emph{non-redundantly} capture multiple variants of
+          the same kernel.
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Ordering}
+  \begin{itemize}
+    \item Completely \emph{un}ordered by default
+    \item Program only well-formed
+
+      \emph{if} domain traversal order does not matter
+    \item Depdencies
+
+      \emph{can} dictate execution order
+
+      \emph{within} largest set of shared loops
+  \end{itemize}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Loo.py vs reality}
+  \begin{itemize}
+    \item
+    Two modes of operation:
+    \begin{itemize}
+      \item Standalone
+      \item In-process
+    \end{itemize}
+    \item Flat data structure:
+      \begin{itemize}
+        \item Easy to manipulate
+        \item Kernel fusion
+      \end{itemize}
+    \item Register-your-own:
+      \begin{itemize}
+        \item Functions
+        \item Symbols
+        \item Reductions
+      \end{itemize}
+    \item Literal code `escape hatch'
+    \item Predicated execution
+    \item Tree-of-domains for data-dependent control flow
+  \end{itemize}
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Bonus Features}
+  \begin{columns}
+    \column{0.2\textwidth}
+      \includegraphics[width=\textwidth]{glass-dollar.jpeg}
+    \column{0.7\textwidth}
+      Free extras:
+      \begin{itemize}
+        \item A-priori bounds checking
+        \item Generate a sequential version of the code
+        \item Automatic Benchmarking
+        \item Free tuning advice
+          \begin{itemize}
+            \item Local memory layout
+            \item Suboptimal use of hw parallelism
+            \item Based on knowledge about target hardware
+          \end{itemize}
+        \item Automatic Testing
+          \begin{itemize}
+            \item \dots against sequential version
+            \item \dots which is easier to verify
+          \end{itemize}
+      \end{itemize}
+  \end{columns}
+\end{frame}
+\addimgcredit{Glass dollar: sxc.hu/flaivoloka}
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \bigncentered{DEMO TIME}
+\end{frame}
+
+% }}}
+\end{document}
+
+% vim: foldmethod=marker

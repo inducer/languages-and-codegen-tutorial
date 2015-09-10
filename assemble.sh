@@ -24,17 +24,19 @@ for nb in [0-9]*/**/*ipynb; do
 
   PROCESSED_IPYNB="${CONV_BASE}.ipynb"
   "$MYDIR/ipython-demo-tools/demo-ready-ipynb" --keep "$nb" "$PROCESSED_IPYNB"
-  if ! test -f "$CONV_PY" || test "$nb" -nt "$CONV_PY"; then
-    ipython nbconvert "$PROCESSED_IPYNB" --to=python "--output=${CONV_BASE}"
-  fi
-  if ! test -f "$CONV_HTML" || test "$nb" -nt "$CONV_HTML"; then
-    ipython nbconvert "$PROCESSED_IPYNB" --to=html "--output=${CONV_BASE}"
-  fi
+  # if ! test -f "$CONV_PY" || test "$nb" -nt "$CONV_PY"; then
+  #   ipython nbconvert "$PROCESSED_IPYNB" --to=python "--output=${CONV_BASE}"
+  # fi
+  # if ! test -f "$CONV_HTML" || test "$nb" -nt "$CONV_HTML"; then
+  #   ipython nbconvert "$PROCESSED_IPYNB" --to=html "--output=${CONV_BASE}"
+  # fi
   if ! test -f "$CONV_PDF" || test "$nb" -nt "$CONV_PDF"; then
     ipython nbconvert "$PROCESSED_IPYNB" --to=latex --post=PDF "--output=${CONV_BASE}"
 
     mv "${TRUNK}.pdf" $CONV_DIR
-    rm -f "${TRUNK}.tex" "${TRUNK}.log" "${TRUNK}.out" "${TRUNK}.aux"
+    rm -f "${CONV_BASE}.tex"
+    rm -Rf "${CONV_BASE}_files"
+    rm -f "${TRUNK}.log" "${TRUNK}.out" "${TRUNK}.aux"
   fi
 done
 function mkdir_and_cp()

@@ -33,37 +33,41 @@
 \institute[Computer Science $\cdot$ UIUC]
 {Computer Science\\University of Illinois at Urbana-Champaign}
 
+\date{}
+
 \frame{
   \titlepage
 }
 % }}}
 % -----------------------------------------------------------------------------
 \section{OpenCL}
+% -----------------------------------------------------------------------------
 % {{{
-%\input{what-is-opencl-v2}
+\input{what-is-opencl-v2}
 
-% \newcommand{\khronoscredit}{
-%   \begin{tikzpicture}[overlay]
-%     \node [xshift=1cm,yshift=0.5cm]
-%       at (current page.south west)
-%       [font=\scriptsize,fill=gray!30,anchor=south west,opacity=0.5]
-%       {Credit: Khronos Group};
-%   \end{tikzpicture}
-% }
-% \def\khronosslide#1#2
-% {
-%   \begin{frame}{#1}
-%     \hspace*{-0.75cm}\includegraphics[viewport=2cm 0cm 31cm 14.5cm,clip=true,width=1.15\textwidth,page=#2]{opencl-overview.pdf}
-%     \khronoscredit
-%   \end{frame}
-% }
-% \begin{nologo}
-% \khronosslide{Who?}{4}
-% \khronosslide{When?}{5}
-% \khronosslide{Why?}{3}
-% \end{nologo}
+\newcommand{\khronoscredit}{
+  \begin{tikzpicture}[overlay]
+    \node [xshift=1cm,yshift=0.5cm]
+      at (current page.south west)
+      [font=\scriptsize,fill=gray!30,anchor=south west,opacity=0.5]
+      {Credit: Khronos Group};
+  \end{tikzpicture}
+}
+\def\khronosslide#1#2
+{
+  \begin{frame}{#1}
+    \hspace*{-0.75cm}\includegraphics[viewport=2cm 0cm 31cm 14.5cm,clip=true,width=1.15\textwidth,page=#2]{opencl-overview.pdf}
+    \khronoscredit
+  \end{frame}
+}
+\begin{nologo}
+\khronosslide{Who?}{4}
+\khronosslide{When?}{5}
+\khronosslide{Why?}{3}
+\end{nologo}
 
 
+\begin{comment}
 \begin{nologo}
 \begin{frame}{CL vs CUDA side-by-side}
   \begin{columns}
@@ -76,8 +80,9 @@
   \end{columns}
 \end{frame}
 \end{nologo}
+\end{comment}
 
-\input{cuda-cl-dictionary}
+%\input{cuda-cl-dictionary}
 \input{cl-computing-as-a-service}
 %\input{gpu-cl-execution-model}
 %\input{why-gpu-scripting-v3}
@@ -876,9 +881,6 @@
 \addimgcredit{Intel logo: Intel Corporation}
 % }}}
 
-% -----------------------------------------------------------------------------
-\questionframe{}
-% -----------------------------------------------------------------------------
 % }}}
 \end{document}
 
