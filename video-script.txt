@@ -1,0 +1,80 @@
+(Title card)
+
+Hi, my name is Andreas Kloeckner, and I'm looking forward to having you join me
+for my tutorial "From description to code generation: building high-performance
+tools in Python"at supercomputing 2015.
+
+The harsh reality about high-performance computing, to my mind, is that, while
+the mathematical ideas are often quite simple, the code that ultimately
+expresses them is very much not.
+
+(SCREENSHOT OF COMPLICATED CODE)
+
+And so the constant fight in doing scientific computing with an ambition for
+high-performance is to manage this incidental complexity.
+
+The idea that is easy in theory, but tricky in practice, is to keep the amount
+of code used to specify the computation commensurate with the complexity of the
+mathematical ideas.
+
+Abstraction, of course, is the mathematical and computer science tool to make
+that happen. And it is often easy to build abstractions, just think of the
+matrix and vector objects in Matlab or Python's numpy. The crux is, though,
+that these abstractions are rarely free in terms of computational resources.
+
+So this tutorial is about a set of Python-based open-source tools designed to help with that.
+
+* It all starts with the capability to design domain-specific languages.
+
+* The next important step is to enrich and transform these languages in ways
+that gradually add more implementation detail.
+
+* Once there is enough detail for the model to be implemented, code needs to be
+generated and actually executed, most likely on high-performance devices such
+as GPUs.
+
+-----------------
+
+To make this as informative, enlightening, and entertaining as possible, we
+will do this as follows:
+
+The tutorial is organized as a sequence of interactive "notebooks", each
+consisting of code interleaved with text and images. As we go, we will work
+through these notebooks, and you will see the tools in action, doing the things
+that they were designed to do. Some key bits of code we will write together as
+a group, and other times you will work through small practice problems on your
+own or in small groups.
+
+I will provide a virtual machine image for you that contains all the software you need to follow along.
+
+-------------------
+
+First, I will show you a few bits and pieces of Python, an approachable
+high-level language that we will use as a foundation for our work. This should
+be enough to keep you going during the tutorial, even if you have never
+programmed in Python. As long as you have programmed before, you should be fine.
+
+Next, we will learn how to build and transform expression trees, the natural
+way of capturing mathematical ideas on a computer. This can help describe many
+things, from a PDE to an image processing algorithm.
+
+Next, we will worry about executing high-performance code from Python. To do
+so, we will use PyOpenCL, a Python package that comfortably lets us execute C
+code on GPUs and CPUs.
+
+Next, we will think about how to actually generate that code, at runtime, right
+before it gets used. To get started with something simple, we can piece
+together code like Legos from premade pieces. This is very easy and already
+quite versatile.
+
+Finally, we will investigate a tool called loopy that can help with more
+challenging code generation tasks where you would like to wring the last ounce
+of performance out of a machine.
+
+-------------------
+
+And that's it. At the end of the tutorial, my goal is for you to have a good
+grasp of how to build tools that go from a description all the way down to
+high-performance code.
+
+I am looking forward to seeing you there!
