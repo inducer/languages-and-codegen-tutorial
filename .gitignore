@@ -5,3 +5,4 @@ cleared
 upload
 dist
 __pycache__
+*dist.zip

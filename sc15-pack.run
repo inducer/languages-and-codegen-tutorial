@@ -1,0 +1,32 @@
+TUT_ID=sc15
+set -e
+if test -d $TUT_ID-tutorial-materials; then
+  echo "------------------------------------------------------------"
+  echo "A folder '$TUT_ID-tutorial-materials' already exists. "
+  echo "If you would like to redownload the materials, delete the "
+  echo "folder using"
+  echo
+  echo "rm -Rf $TUT_ID-tutorial-materials"
+  echo
+  echo "and then retry this command."
+  echo "------------------------------------------------------------"
+  exit 1
+fi
+
+echo "------------------------------------------------------------"
+echo "One second, fetching your tutorial materials..."
+echo "------------------------------------------------------------"
+echo "Downloading..."
+set -x
+rm -f sc15-tutorial-materials-dist.zip
+curl -O http://andreask.cs.illinois.edu/tmp/$TUT_ID-tutorial-materials-dist.zip
+echo "Unpacking..."
+unzip -q $TUT_ID-tutorial-materials-dist.zip
+set +x
+
+echo "------------------------------------------------------------"
+echo "All done!"
+echo "------------------------------------------------------------"
+echo "Your tutorial materials are unpacked and ready for use,"
+echo "right here in the subdirectory $TUT_ID-tutorial-materials."
+echo "Hope you enjoy the tutorial!"

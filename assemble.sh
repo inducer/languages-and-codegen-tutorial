@@ -21,6 +21,7 @@ for nb in [0-9]*/**/*ipynb; do
   CONV_BASE="dist/${nb%.ipynb}"
   CONV_PY="${CONV_BASE}.py"
   CONV_HTML="${CONV_BASE}.html"
+  CONV_PDF="${CONV_BASE}.pdf"
 
   PROCESSED_IPYNB="${CONV_BASE}.ipynb"
   "$MYDIR/ipython-demo-tools/demo-ready-ipynb" --keep "$nb" "$PROCESSED_IPYNB"
@@ -54,3 +55,10 @@ for i in slides/out/[0-9]*pdf; do
   bn=$(basename "$i")
   mkdir_and_cp $i dist/${bn%.pdf}/0-slides.pdf
 done
+
+cp -R --reflink dist sc15-tutorial-materials
+cp -R --reflink cleared sc15-tutorial-materials
+rm -f sc15-tutorial-materials-dist.zip
+zip -r sc15-tutorial-materials-dist.zip sc15-tutorial-materials
+rm -Rf sc15-tutorial-materials
+
