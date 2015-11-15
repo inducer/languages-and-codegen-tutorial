@@ -62,7 +62,7 @@
 }
 \begin{nologo}
 \khronosslide{Who?}{4}
-\khronosslide{When?}{5}
+%\khronosslide{When?}{5}
 \khronosslide{Why?}{3}
 \end{nologo}
 
@@ -96,95 +96,6 @@
   \bigncentered{DEMO TIME}
 \end{frame}
 % }}}
-% -----------------------------------------------------------------------------
-\section[Runtime]{OpenCL runtime}
-% -----------------------------------------------------------------------------
-\subsection{A Kingdom of Nouns}
-% -----------------------------------------------------------------------------
-% {{{
-\begin{frame}{OpenCL Object Diagram}
-  \begin{center}
-  \includegraphics[viewport=1.2in 4in 8.5in 10in,clip=true,page=20,height=0.7\textheight]{opencl-11.pdf}
-  \end{center}
-  \creditto{Credit: Khronos Group}
-\end{frame}
-
-\input{cl-platform}
-\input{cl-device}
-
-\input{cl-context-v2}
-\input{cl-command-queues}
-\input{cl-command-queue}
-
-\input{cl-compute-dag-v2}
-\input{cl-buffer-objects-v4}
-\input{cl-programs-and-kernels-v2}
-
-\begin{frame}{OpenCL Object Diagram}
-  \begin{center}
-  \includegraphics[viewport=1.2in 4in 8.5in 10in,clip=true,page=20,height=0.7\textheight]{opencl-11.pdf}
-  \end{center}
-  \creditto{Credit: Khronos Group}
-\end{frame}
-% }}}
-% -----------------------------------------------------------------------------
-\subsection{Synchronization}
-% -----------------------------------------------------------------------------
-% {{{
-\begin{nologo}
-\begin{frame}{Recap: Concurrency and Synchronization}
-  \uncover<+->{
-    \begin{beamercolorbox}[sep=3mm]{block body}
-      GPUs have layers of concurrency.\\
-      \hfill Each layer has its synchronization primitives.
-    \end{beamercolorbox}
-  }
-  \bigskip
-  \begin{columns}[c]
-    \column{0.6\textwidth}
-      \uncover<+->{
-        \begin{itemize}
-          \item Intra-group:\\ 
-            \texttt{barrier(\dots)}, \\
-            %\texttt{mem\_fence(\dots)}\\
-            \texttt{\dots} =
-            \texttt{CLK\_\{LOCAL,GLOBAL\}\_MEM\_FENCE}
-          \item Inter-group:\\ Kernel launch
-          \item CPU-GPU:\\ Command queues, Events
-        \end{itemize}
-      }
-    \column{0.35\textwidth}
-      \includegraphics[width=\textwidth]{onion.jpeg}
-  \end{columns}
-
-\end{frame}
-\end{nologo}
-\addimgcredit{Onions: flickr.com/darwinbell \cc}
-% -----------------------------------------------------------------------------
-\begin{frame}{Synchronization between Groups}
-  \begin{block}<+->{Golden Rule:}
-    Results of the algorithm must be independent of the order in which
-    work groups are executed.
-  \end{block}
-
-  \uncover<+->{%
-  \textbf{Consequences:}
-  \begin{itemize}
-    \item Work groups may read the same information from global memory.
-    \item But: Two work groups may not validly write different things to
-      the same global memory.
-    \item Kernel launch serves as
-      \begin{itemize}
-        \item Global barrier
-        \item Global memory fence
-      \end{itemize}
-  \end{itemize}
-  }
-\end{frame}
-\input{barrier}
-%\input{memory-fence}
-% }}}
-
 % -----------------------------------------------------------------------------
 \section[Patterns]{Parallel patterns}
 % -----------------------------------------------------------------------------
@@ -760,23 +671,97 @@
 \end{frame}
 % }}}
 
+% }}}
+\appendix
 % -----------------------------------------------------------------------------
-\section[Code gen.]{Code writes Code}
+\section[Runtime]{OpenCL runtime}
+% -----------------------------------------------------------------------------
+\subsection{A Kingdom of Nouns}
 % -----------------------------------------------------------------------------
 % {{{
-\begin{frame}{Code generation}
-  Three main ways to generate code:
-  \begin{itemize}
-    \item Textual substitution
-    \item Templating
-    \item Abstract syntax trees
-  \end{itemize}
+\begin{frame}{OpenCL Object Diagram}
+  \begin{center}
+  \includegraphics[viewport=1.2in 4in 8.5in 10in,clip=true,page=20,height=0.7\textheight]{opencl-11.pdf}
+  \end{center}
+  \creditto{Credit: Khronos Group}
 \end{frame}
-% -----------------------------------------------------------------------------
-\begin{frame}
-  \bigncentered{DEMO TIME}
+
+\input{cl-platform}
+\input{cl-device}
+
+\input{cl-context-v2}
+\input{cl-command-queues}
+\input{cl-command-queue}
+
+\input{cl-compute-dag-v2}
+\input{cl-buffer-objects-v4}
+\input{cl-programs-and-kernels-v2}
+
+\begin{frame}{OpenCL Object Diagram}
+  \begin{center}
+  \includegraphics[viewport=1.2in 4in 8.5in 10in,clip=true,page=20,height=0.7\textheight]{opencl-11.pdf}
+  \end{center}
+  \creditto{Credit: Khronos Group}
 \end{frame}
 % }}}
+% -----------------------------------------------------------------------------
+\subsection{Synchronization}
+% -----------------------------------------------------------------------------
+% {{{
+\begin{nologo}
+\begin{frame}{Recap: Concurrency and Synchronization}
+  \uncover<+->{
+    \begin{beamercolorbox}[sep=3mm]{block body}
+      GPUs have layers of concurrency.\\
+      \hfill Each layer has its synchronization primitives.
+    \end{beamercolorbox}
+  }
+  \bigskip
+  \begin{columns}[c]
+    \column{0.6\textwidth}
+      \uncover<+->{
+        \begin{itemize}
+          \item Intra-group:\\ 
+            \texttt{barrier(\dots)}, \\
+            %\texttt{mem\_fence(\dots)}\\
+            \texttt{\dots} =
+            \texttt{CLK\_\{LOCAL,GLOBAL\}\_MEM\_FENCE}
+          \item Inter-group:\\ Kernel launch
+          \item CPU-GPU:\\ Command queues, Events
+        \end{itemize}
+      }
+    \column{0.35\textwidth}
+      \includegraphics[width=\textwidth]{onion.jpeg}
+  \end{columns}
+
+\end{frame}
+\end{nologo}
+\addimgcredit{Onions: flickr.com/darwinbell \cc}
+% -----------------------------------------------------------------------------
+\begin{frame}{Synchronization between Groups}
+  \begin{block}<+->{Golden Rule:}
+    Results of the algorithm must be independent of the order in which
+    work groups are executed.
+  \end{block}
+
+  \uncover<+->{%
+  \textbf{Consequences:}
+  \begin{itemize}
+    \item Work groups may read the same information from global memory.
+    \item But: Two work groups may not validly write different things to
+      the same global memory.
+    \item Kernel launch serves as
+      \begin{itemize}
+        \item Global barrier
+        \item Global memory fence
+      \end{itemize}
+  \end{itemize}
+  }
+\end{frame}
+\input{barrier}
+%\input{memory-fence}
+% }}}
+
 % -----------------------------------------------------------------------------
 \section[]{OpenCL implementations}
 % -----------------------------------------------------------------------------
