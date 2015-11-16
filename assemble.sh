@@ -55,6 +55,7 @@ function mkdir_and_cp()
 
 for i in [0-9]*/**/*~*ipynb~*.pyc~*\~(#q.)(#qN); do
   mkdir_and_cp $i dist/$i
+  mkdir_and_cp $i cleared/$i
 done
 for i in slides/out/[0-9]*pdf; do
   bn=$(basename "$i")

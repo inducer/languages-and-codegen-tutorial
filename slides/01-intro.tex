@@ -26,7 +26,10 @@
 % {{{ front matter
 % -----------------------------------------------------------------------------
 
-\title{Part 1: Introduction}
+\title{
+  From Description to Code Generation: Building High-Performance Tools in Python\\
+  Part 1: Introduction
+}
 
 \author{
   Andreas Klöckner\\
@@ -44,6 +47,40 @@
 % }}}
 % -----------------------------------------------------------------------------
 \section{Outline}
+% -----------------------------------------------------------------------------
+\begin{frame}{Setting}
+  High-performance code is \textbf{challenging}:
+  \begin{itemize}
+    \item designed to push machines, models, and methods to the limits
+      of their capabilities
+
+    \item often put together on a (comparatively) shoestring budget
+
+    \item often repurposed $\rightarrow$ high demands on
+    flexibility
+  \end{itemize}
+
+\end{frame}
+% -----------------------------------------------------------------------------
+\begin{frame}{Goals}
+  \begin{itemize}
+    \item Build Mathematically-oriented mini-languages (`DSLs')
+    \item Apply domain-specific optimizations and transformations
+    \item Leverage tools to generate GPU/multi-core code from DSL
+    \item Create glue that ties components together
+  \end{itemize}
+  \uncover<+->{}
+  \uncover<+->{%
+    \begin{tikzpicture} [overlay]
+      \node [below left=1cm of current page.north east, draw,drop shadow,fill=white,
+      inner xsep=0.5cm,inner ysep=0.5cm,thick, text
+      width=0.7\textwidth]
+        {%
+          \textbf{`Don't be limited by what's available.'}
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}
 % -----------------------------------------------------------------------------
 \begin{frame}
   \begin{columns}
@@ -95,73 +132,6 @@
       \end{itemize}
     \end{itemize}
   \end{columns}
-\end{frame}
-% -----------------------------------------------------------------------------
-\section{Goals}
-% -----------------------------------------------------------------------------
-\begin{frame}{Abstractions}
-  What is an abstraction?
-
-  \begin{quote}
-    Something that turns details into data.
-  \end{quote}
-
-  What's lost by not using abstractions?
-  \begin{quote}
-    Flexibility --- you can tolerate changing
-    details
-  \end{quote}
-
-  Where are abstractions helpful?
-  \begin{itemize}
-    \item Code transformations
-    \item Targeting vendor implementations
-    \item (Modelling)
-  \end{itemize}
-
-  \medskip
-  Where do you stop abstracting?
-  \begin{itemize}
-    \item As close to the bare numerics as
-      possible
-
-      (\emph{perhaps} specified as \emph{simple} loop-y Fortran)
-    \item At the machine model (JIT + Cores + Wide vectors)
-  \end{itemize}
-  \uncover<+->{}
-  \uncover<+->{%
-    \begin{tikzpicture} [overlay]
-      \node [below left=1cm of current page.north east, draw,drop shadow,fill=white,
-      inner xsep=0.5cm,inner ysep=0.5cm,thick, text
-      width=0.7\textwidth]
-        {%
-          \textbf{`Don't be limited by what's available.'}
-        } ;
-    \end{tikzpicture}
-  }
-\end{frame}
-% -----------------------------------------------------------------------------
-\begin{frame}{Goals}
-  \begin{itemize}
-    \item Build Mathematically-oriented mini-languages (`DSLs')
-    \item Apply domain-specific optimizations and transformations
-    \item Leverage tools to generate GPU/multi-core code from DSL
-    \item Create glue that ties components together
-  \end{itemize}
-\end{frame}
-% -----------------------------------------------------------------------------
-\begin{frame}{Setting}
-  High-performance code is \textbf{challenging}:
-  \begin{itemize}
-    \item designed to push machines, models, and methods to the limits
-      of their capabilities
-
-    \item often put together on a (comparatively) shoestring budget
-
-    \item often repurposed $\rightarrow$ high demands on
-    flexibility
-  \end{itemize}
-
 \end{frame}
 % -----------------------------------------------------------------------------
 \section{Why Python?}
