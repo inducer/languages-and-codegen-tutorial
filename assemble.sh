@@ -39,6 +39,11 @@ for nb in [0-9]*/**/*ipynb; do
     rm -Rf "${CONV_BASE}_files"
     rm -f "${TRUNK}.log" "${TRUNK}.out" "${TRUNK}.aux"
   fi
+
+  CONV_DIR="cleared/$DIR"
+  mkdir -p "$CONV_DIR"
+  CONV_IPYNB="cleared/$nb"
+  "$MYDIR/demo-ready-ipynb" "$nb" "$CONV_IPYNB"
 done
 function mkdir_and_cp()
 {
