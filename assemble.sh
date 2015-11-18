@@ -24,7 +24,7 @@ for nb in [0-9]*/**/*ipynb; do
   CONV_PDF="${CONV_BASE}.pdf"
 
   PROCESSED_IPYNB="${CONV_BASE}.ipynb"
-  "$MYDIR/ipython-demo-tools/demo-ready-ipynb" --keep "$nb" "$PROCESSED_IPYNB"
+  "$MYDIR/ipython-demo-tools/prepare-ipynb" remove-marks "$nb" "$PROCESSED_IPYNB"
   # if ! test -f "$CONV_PY" || test "$nb" -nt "$CONV_PY"; then
   #   ipython nbconvert "$PROCESSED_IPYNB" --to=python "--output=${CONV_BASE}"
   # fi
@@ -43,7 +43,7 @@ for nb in [0-9]*/**/*ipynb; do
   CONV_DIR="cleared/$DIR"
   mkdir -p "$CONV_DIR"
   CONV_IPYNB="cleared/$nb"
-  "$MYDIR/ipython-demo-tools/demo-ready-ipynb" "$nb" "$CONV_IPYNB"
+  "$MYDIR/ipython-demo-tools/prepare-ipynb" clear-output clear-marked-inputs "$nb" "$CONV_IPYNB"
 done
 function mkdir_and_cp()
 {
