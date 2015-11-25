@@ -4,5 +4,6 @@ set -e
 set -x
 
 for i in 01 03 06; do
-  cp out/$i-*.pdf  ../$i*
+  tgt_dir=$(echo ../$i*)
+  cp out/$i-*.pdf  $tgt_dir/0-slides.pdf
 done
