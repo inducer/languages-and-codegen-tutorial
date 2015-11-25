@@ -11,7 +11,3 @@ $ENV{TEXINPUTS} .=':slides';
 $ENV{TEXINPUTS} .=':code';
 $ENV{TEXINPUTS} .=':vids';
 $HOME = $ENV{HOME};
-$ENV{TEXINPUTS} .=':$HOME/research/presentations/slides';
-$ENV{TEXINPUTS} .=':$HOME/research/presentations/slides/snippets';
-$ENV{TEXINPUTS} .=':$HOME/research/presentations/slides/style';
-$ENV{TEXINPUTS} .=':$HOME/research/presentations/slides/media';

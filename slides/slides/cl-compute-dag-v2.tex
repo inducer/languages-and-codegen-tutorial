@@ -1,0 +1,41 @@
+\begin{frame}{Capturing Dependencies}
+  \begin{columns}
+    \column{0.3\textwidth}
+      B = f(A)\\
+      C = g(B)\\
+      E = f(C)\\
+      F = h(C)\\
+      G = g(E,F)\\
+      P = p(B)\\
+      Q = q(B)\\
+      R = r(G,P,Q)
+    \column{0.6\textwidth}
+      \begin{center}
+        \input{general-dep-graph}
+      \end{center}
+  \end{columns}
+  \uncover<2>{
+    \begin{tikzpicture} [overlay]
+      \node [above right=1cm of current page.south west, draw,drop shadow,fill=white,
+      text width=0.6\textwidth, inner xsep=0.5cm,inner ysep=0.5cm,thick]
+        {
+          \begin{itemize}
+            \item Switch queue to out-of-order mode!
+
+            \item Specify as list of events using 
+              \texttt{wait\_for=} optional keyword
+              to \texttt{enqueue\_XXX}.
+
+            \item Can also enqueue barrier.
+
+            \item Common use case: Transmit/receive
+              from other MPI ranks.
+
+            \item Possible in hardware on Nv Fermi, AMD Cayman:
+              Submit parallel work to increase machine use.
+              \subitem{Not yet ubiquitously implemented}
+          \end{itemize}
+        } ;
+    \end{tikzpicture}
+  }
+\end{frame}

@@ -1,0 +1,56 @@
+\begin{frame}{Synchronization}
+  What is a Barrier?
+
+  \bigskip
+  \begin{center}
+  \begin{tikzpicture}[scale=0.8,
+  thread/.style={blue,very thick,->},
+  barrier/.style={ultra thick},
+  stopped/.style={fill=red,shape=regular polygon,regular polygon sides=8},
+  ]
+  \draw [barrier] (0,0) -- +(4,0) ;
+  \uncover<+>{
+    \draw [thread] (1,5) -- +(0,-2) ;
+    \draw [thread] (2,5) -- +(0,-3) ;
+    \draw [thread] (3,5) -- +(0,-1) ;
+  }
+  \uncover<+>{
+    \draw [thread] (1,5) -- +(0,-3) ;
+    \draw [thread] (2,5) -- +(0,-4) ;
+    \draw [thread] (3,5) -- +(0,-2) ;
+  }
+  \uncover<+>{
+    \node [stopped] at (2,0) {};
+    \draw [thread] (1,5) -- +(0,-4) ;
+    \draw [thread] (2,5) -- +(0,-5) ;
+    \draw [thread] (3,5) -- +(0,-3) ;
+  }
+  \uncover<+>{
+    \node [stopped] at (2,0) {};
+    \node [stopped] at (1,0) {};
+    \draw [thread] (1,5) -- +(0,-5) ;
+    \draw [thread] (2,5) -- +(0,-5) ;
+    \draw [thread] (3,5) -- +(0,-4) ;
+  }
+  \uncover<+>{
+    \node [stopped] at (2,0) {};
+    \node [stopped] at (1,0) {};
+    \node [stopped] at (3,0) {};
+    \draw [thread] (1,5) -- +(0,-5) ;
+    \draw [thread] (2,5) -- +(0,-5) ;
+    \draw [thread] (3,5) -- +(0,-5) ;
+  }
+  \uncover<+>{
+    \draw [thread] (1,5) -- +(0,-5) ;
+    \draw [thread] (2,5) -- +(0,-5) ;
+    \draw [thread] (3,5) -- +(0,-5) ;
+  }
+  \uncover<+>{
+    \draw [thread] (1,5) -- +(0,-6) ;
+    \draw [thread] (2,5) -- +(0,-6) ;
+    \draw [thread] (3,5) -- +(0,-6) ;
+  }
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+

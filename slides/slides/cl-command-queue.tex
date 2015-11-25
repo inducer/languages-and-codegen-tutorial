@@ -1,0 +1,23 @@
+\begin{frame}[fragile]{Command Queues and Events}
+  \begin{lstlisting}[gobble=4]
+    queue = cl.CommandQueue(context, device=None, 
+      properties=None | [(prop, value),...])
+  \end{lstlisting}
+  \begin{columns}
+    \column{0.65\textwidth}
+        \begin{itemize}
+          \item Attached to single device
+          \item \text{cl.command\_queue\_properties}\dots
+            \begin{itemize}
+              \item \texttt{OUT\_OF\_ORDER\_EXEC\_MODE\_ENABLE}:\\
+                Do not force sequential execution
+              \item \texttt{PROFILING\_ENABLE}:\\
+                Gather timing info
+            \end{itemize}
+        \end{itemize}
+    \column{0.35\textwidth}
+      \includegraphics[width=\textwidth]{queue.jpeg}
+  \end{columns}
+\end{frame}
+\addimgcredit{Queue: sxc.hu/cobrasoft}
+

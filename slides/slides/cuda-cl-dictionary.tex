@@ -1,0 +1,25 @@
+\begin{frame}{OpenCL $\leftrightarrow$ CUDA: A dictionary}
+  \begin{tikzpicture}[overlay]
+    \node [anchor=south east,rotate=10,opacity=0.3] 
+    at ($(current page.south east) + (-0.5cm,2cm)$)
+    { \includegraphics[width=6cm]{dictionary-desat.jpeg} } ;
+  \end{tikzpicture}
+
+  \begin{tabular}{r|l}
+    \textbf{OpenCL} & \textbf{CUDA} \\
+    \hline
+    Grid & Grid \\
+    Work Group& Block \\
+    Work Item & Thread \\
+    \texttt{\_\_kernel} & \texttt{\_\_global\_\_} \\
+    \texttt{\_\_global} & \texttt{\_\_device\_\_} \\
+    \texttt{\_\_local} & \texttt{\_\_shared\_\_} \\
+    \texttt{\_\_private} & \texttt{\_\_local\_\_} \\
+    \texttt{image$n$d\_t} & \texttt{texture\textless type, $n$, ...\textgreater} \\
+    \texttt{barrier(LMF)} & \texttt{\_\_syncthreads()} \\
+    \texttt{get\_local\_id(012)} & \texttt{threadIdx.xyz} \\
+    \texttt{get\_group\_id(012)} & \texttt{blockIdx.xyz} \\
+    \texttt{get\_global\_id(012)} & -- (reimplement) \\
+  \end{tabular}
+\end{frame}
+\addimgcredit{Dictionary: sxc.hu/topfer}

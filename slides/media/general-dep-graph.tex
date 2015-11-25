@@ -1,0 +1,37 @@
+\begin{tikzpicture}[
+  scale=0.014,thick,
+  annode/.style={xshift=0.1cm},
+  intermed/.style={input,fill=intermed},
+  ]
+    \node [input] (A) at (152,479) [draw,ellipse] {A};
+    \node [intermed] (C) at (80,295) [draw,ellipse] {C};
+    \node [intermed] (B) at (152,387) [draw,ellipse] {B};
+    \node [intermed] (E) at (27,203) [draw,ellipse] {E};
+    \node [intermed] (G) at (99,111) [draw,ellipse] {G};
+    \node [intermed] (F) at (99,203) [draw,ellipse] {F};
+    \node [intermed] (Q) at (211,203) [draw,ellipse] {Q};
+    \node [intermed] (P) at (152,295) [draw,ellipse] {P};
+    \node [output] (R) at (154,19) [draw,ellipse] {R};
+    \draw [->] (C) -- (F);
+    \draw (96,249) node [annode] {h};
+    \draw [->] (G) -- (R);
+    \draw (134.5,65) node [annode] {r};
+    \draw [->] (B) -- (C);
+    \draw (126.5,341) node [annode] {g};
+    \draw [->] (P) -- (R);
+    \draw (156.5,157) node [annode] {r};
+    \draw [->] (E) -- (G);
+    \draw (73.5,157) node [annode] {g};
+    \draw [->] (Q) -- (R);
+    \draw (193.5,111) node [annode] {r};
+    \draw [->] (F) -- (G);
+    \draw (103.5,157) node [annode] {g};
+    \draw [->] (B) -- (Q);
+    \draw (202.5,295) node [annode] {q};
+    \draw [->] (A) -- (B);
+    \draw (154.5,433) node [annode] {f};
+    \draw [->] (B) -- (P);
+    \draw (156.5,341) node [annode] {p};
+    \draw [->] (C) -- (E);
+    \draw (61.5,249) node [annode] {f};
+\end{tikzpicture}

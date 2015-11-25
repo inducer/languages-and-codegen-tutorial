@@ -1,0 +1,29 @@
+\begin{frame}[fragile]{Contexts}
+  \begin{lstlisting}[gobble=4]
+    context = cl.Context(devices=None | [dev1, dev2], dev_type=None)
+    context = cl.create_some_context(interactive=True)
+  \end{lstlisting}
+
+  \begin{columns}
+    \column{0.25\textwidth}
+      \includegraphics[width=\textwidth]{context.jpeg}
+    \column{0.75\textwidth}
+      \begin{itemize}
+        \item Spans one or more Devices
+        \item Create from device type or list of devices
+          \subitem{See docs for \texttt{cl.Platform}, \texttt{cl.Device}}
+        \item \texttt{dev\_type}: 
+          \texttt{\textit{DEFAULT}},
+          \texttt{ALL}, \texttt{CPU}, \texttt{GPU}
+        \item Needed to\dots
+          \begin{itemize}
+            \item \dots allocate Memory Objects
+            \item \dots create and build Programs
+            \item \dots host Command Queues
+            \item \dots execute Grids
+          \end{itemize}
+      \end{itemize}
+  \end{columns}
+\end{frame}
+\addimgcredit{Context: sxc.hu/svilen001}
+

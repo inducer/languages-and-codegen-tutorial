@@ -1,0 +1,113 @@
+{
+\def\evalprint#1{{\pgfmathtruncatemacro{\mathresult}{#1}\mathresult}}
+\begin{frame}{OpenCL: Computing as a Service}
+
+  \begin{tikzpicture}[
+    z={(0.5cm,-1cm)},
+    every shadow/.style={shadow xshift=-0.1cm,shadow yshift=0.1cm},
+    memory/.style={fill=blue!40,draw=blue},
+    langarrow/.style={single arrow,shape border rotate=90,
+      single arrow tip angle=165,single arrow head extend=0.6cm,
+      draw,thick,fill=yellow},
+  ]
+    \uncover<+->{
+    \node [draw,inner sep=5mm,fill=green!40,drop shadow,
+      text width=1.5cm,text centered] (host) {Host\\(CPU)} ;
+      \uncover<3-4>{
+        \node [above left=0.2cm of host.south east,font=\tiny,memory,
+          inner sep=0.5mm,minimum width=1.3cm]
+          { Memory } ;
+      }
+    }
+    \uncover<+->{
+      \foreach \i in {0,...,3}
+      {
+        \pgfmathtruncatemacro{\plat}{\i/2}
+        \node 
+          [draw,fill=yellow!50, anchor=west,text width=4.5cm,font=\small] 
+          at ($(host.east)+(1.75+\plat,0,-1.5+\i)$)
+          (cdev\i)
+          {
+            Compute Device \evalprint{mod(\i,2)}
+            {\tiny(Platform \evalprint{\i/2})}\\
+            \begin{tikzpicture}
+              \foreach \j in {0,1,2}
+              {
+                \foreach \k in {0,1,2,7}
+                  \coordinate (pe\i\j\k) at (0.15*\k,0,0.2*\j) ;
+                \node 
+                  [draw,fill=orange!40,fit={(pe\i\j0) (pe\i\j7) (0,0.4,0.2*\j) }] 
+                  (unit\i\j)
+                  {};
+                \foreach \k in {0,1,2,7}
+                  \filldraw 
+                    [fill=red!30]
+                    (pe\i\j\k) ++(-0.05,0) rectangle ++ (0.1,0.4) ;
+                \node at (4.5*0.15,0.2,0.2*\j) 
+                  [anchor=center,font=\tiny,text width=] 
+                  {$\cdots$} ;
+              }
+              \uncover<4>{
+                \draw (pe\i27) ++(0.5,0) 
+                  node [anchor=south west,memory,text width=,minimum height=0.8cm]
+                  {Memory};
+              }
+            \end{tikzpicture}
+          } ;
+        \draw [thick] 
+          (host.east) -- ++(1,0) -- ++(0,0,-1.5+\i) -- ++(\plat+0.75,0);
+      }
+    }
+
+    % memory ------------------------------------------------------------------
+    \uncover<+>{}
+    \uncover<+>{}
+
+    % platforms ---------------------------------------------------------------
+    \uncover<+>{}
+    \uncover<+>{
+      \node [fit=(cdev0) (cdev1),draw,dashed,thick] (plat0) {} ;
+      \node at (plat0.north west) [anchor=south west]
+        {Platform 0 (e.g. CPUs)} ;
+    }
+    \uncover<+>{
+      \node [fit=(cdev2) (cdev3),draw,dashed,thick] (plat1) {} ;
+      \node at (plat1.south west) [anchor=north west]
+        {Platform 1 (e.g. GPUs)} ;
+    }
+
+    % hardware ----------------------------------------------------------------
+    \uncover<+>{}
+    \uncover<+-+(2)>{
+      \draw [<-,thick] (cdev0) -- ++(-3,0.35)
+        node [anchor=east,text width=2.5cm] 
+          {(think ``chip'',\\ has memory interface)} ;
+    }
+    \uncover<+-+(1)>{
+      \draw [<-,thick] (unit32.center) -- ++(-3,0.1)
+        node [anchor=east,text width=3.25cm] 
+          {Compute Unit\\(think ``processor'',\\ has insn. fetch)} ;
+    }
+    \uncover<+>{
+      \draw [<-,thick] (pe327) -- ++(-1.5,-1)
+        node [anchor=east,text width=3.35cm] 
+          {Processing Element\\(think ``SIMD lane'')} ;
+    }
+
+    % programming interfaces --------------------------------------------------
+    \uncover<+>{}
+    \uncover<+-+(1)>{
+      \node [fit=(host)] (hostwrap) {} ;
+      \node at (hostwrap.south) 
+        [anchor=north,langarrow]
+        {Python} ;
+    }
+    \uncover<+->{
+      \node [fit=(plat0) (plat1)] (devwrap) {} ;
+      \node at (devwrap.south) 
+        [anchor=north,draw,langarrow]
+        {Device Language: $\sim$ C99} ;
+    }
+  \end{tikzpicture}
+\end{frame}
+}

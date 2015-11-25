@@ -1,0 +1,52 @@
+\begin{frame}{OpenCL: Execution Model}
+  \begin{columns}
+  \column{.3\textwidth}
+    \begin{tikzpicture}[font=\tiny\bfseries,y=-1cm,anchor=north west]
+      \node at (0,-0.4) [inner sep=0] (gridtitle) {$n$D Grid};
+      \foreach \x in {0, 1, 2}
+        \foreach \y in {0, 1}
+          \node at (0.9*\x, 0.75*\y ) (wgroup\x\y) [draw, fill=red!60, rectangle, 
+            text width=0.6cm, text centered, inner sep=1mm]
+              {Group $(\x, \y)$} ;
+
+      \begin{pgfonlayer}{background}
+        \node [draw,thick,fill=red!30,fit=(gridtitle) (wgroup21)] (gridbox) {} ;
+      \end{pgfonlayer}
+
+      \begin{scope}[yshift=-3cm]
+      \node at (0, -0.4) [inner sep=0] (grouptitle) {Work Group $(1,0)$};
+      \foreach \x in {0, 1, 2, 3}
+        \foreach \y in {0, 1, 2, 3}
+          \node at (0.8*\x, .75*\y) [draw, fill=red!90, rectangle, text width=0.5cm, 
+            text centered,inner sep=1mm]
+            (item\x\y) { Item $(\x, \y)$ };
+      \end{scope}
+
+      \begin{pgfonlayer}{background}
+        \node [draw,thick,fill=red!60,fit=(grouptitle) (item33)] (groupbox) {} ;
+      \end{pgfonlayer}
+
+      \draw[dashed] (wgroup11.south west) -- (groupbox.north west);
+      \draw[dashed] (wgroup11.south east) -- (groupbox.north east);
+
+    \end{tikzpicture}
+
+  \column{0.7\textwidth}
+
+    \begin{itemize}
+      \item<+-> Two-tiered Parallelism
+        \begin{itemize}
+        \item Grid = $N_x\times N_y \times N_z$ work groups
+        \item Work group = $S_x \times S_y\times S_z$ work items
+        \item Total: $\prod_{i\in\{x,y,z\}} S_i N_i$ work items
+        \end{itemize}
+      \item<+-> Comm/Sync only within work group
+        \begin{itemize}
+        \item Work group maps to compute unit
+        \end{itemize}
+      \item<+-> Grid/Group $\approx$ outer loops in an algorithm
+      \item<.-> Device Language:\\
+        \texttt{get\_\{global,group,local\}\_\{id,size\}\\(\texttt{axis})}
+    \end{itemize}
+  \end{columns}
+\end{frame}
