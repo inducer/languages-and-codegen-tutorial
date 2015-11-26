@@ -68,12 +68,12 @@ to get started:
 
       curl -L https://bit.ly/sc15-dsl | bash
 
-  This will download these materials onto the virtual machine and put them
-  into a subdirectory called ``sc15-tutorial-materials``. Next, type::
+   This will download these materials onto the virtual machine and put them
+   into a subdirectory called ``sc15-tutorial-materials``. Next, type::
 
-      ipython3 notebook
+       ipython3 notebook
 
-  to launch a browser-based interface and get started.
+   to launch a browser-based interface and get started.
 
 Software tools
 --------------
