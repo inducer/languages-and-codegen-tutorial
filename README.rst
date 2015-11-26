@@ -1,6 +1,9 @@
 From Description to Code Generation: Building High Performance Tools with Python
 ================================================================================
 
+A tutorial on Domain-Specific Languages
+---------------------------------------
+
 This tutorial teaches you:
 
 * how to **define** mathematically-oriented **domain-specific languages** ("DSLs") in
