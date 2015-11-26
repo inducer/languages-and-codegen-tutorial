@@ -99,7 +99,7 @@ All open-source under MIT/BSD licenses.
 License
 -------
 
-(C) 2015 Andreas Kloeckner
+Copyright 2015 Andreas Kloeckner
 
 Materials are available for use under a Creative Commons CC-BY license.  See
 included file ``LICENSE`` for details.  (I.e. by and large: retain authorship
