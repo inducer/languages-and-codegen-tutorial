@@ -82,8 +82,8 @@ The tutorial demonstrates the use of the following pieces of software:
 
 Core packages:
 
-*   Python: https://www.python.org}
-*   numpy: https://www.numpy.org}
+*   Python: https://www.python.org
+*   numpy: https://www.numpy.org
 *   pymbolic: https://github.com/inducer/pymbolic
 *   PyOpenCL: https://github.com/pyopencl/pyopencl
 *   loopy: https://github.com/inducer/loopy
