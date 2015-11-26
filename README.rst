@@ -75,6 +75,27 @@ to get started:
 
   to launch a browser-based interface and get started.
 
+Software tools
+--------------
+
+The tutorial demonstrates the use of the following pieces of software:
+
+Core packages:
+
+*   Python: https://www.python.org}
+*   numpy: https://www.numpy.org}
+*   pymbolic: https://github.com/inducer/pymbolic
+*   PyOpenCL: https://github.com/pyopencl/pyopencl
+*   loopy: https://github.com/inducer/loopy
+
+Supporting packages:
+
+*   matplotlib: http://www.matplotlib.org
+*   mako: http://www.makotemplates.org
+*   cgen: https://github.com/inducer/cgen
+
+All open-source under MIT/BSD licenses.
+
 License
 -------
 
