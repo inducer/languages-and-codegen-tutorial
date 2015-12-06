@@ -1,4 +1,4 @@
-TUT_ID=sc15
+TUT_ID=MY_TUT_ID
 set -e
 if test -d $TUT_ID-tutorial-materials; then
   echo "------------------------------------------------------------"
@@ -13,13 +13,15 @@ if test -d $TUT_ID-tutorial-materials; then
   exit 1
 fi
 
+URL=MYURL
+
 echo "------------------------------------------------------------"
 echo "One second, fetching your tutorial materials..."
 echo "------------------------------------------------------------"
 echo "Downloading..."
 set -x
 rm -f sc15-tutorial-materials-dist.zip
-curl -O http://andreask.cs.illinois.edu/tmp/$TUT_ID-tutorial-materials-dist.zip
+curl -O 
 echo "Unpacking..."
 unzip -q $TUT_ID-tutorial-materials-dist.zip
 set +x
