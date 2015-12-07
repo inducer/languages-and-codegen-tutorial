@@ -1,0 +1,46 @@
+Dear participant,
+
+It is my great pleasure to welcome you to the tutorial "Domain-specific
+languages to high performance: Code generation and transformation in Python"
+
+At the tutorial, we will be learning how to use code generation from the
+comfortable and powerful scripting language Python to make writing
+high-performance, parallel code for CPUs and GPUs easier, and, perhaps,
+even fun.
+
+To make sure you have a good experience and ample opportunity for
+experimentation at the tutorial, I would like to ask that you download
+and install a virtual machine image that I have prepared specifically
+for the tutorial. Follow these instructions to get started:
+
+1. Download a version of VirtualBox suitable for your system and install it:
+
+   https://www.virtualbox.org/wiki/Downloads
+
+2. Download the machine image itself:
+
+   http://andreask.cs.illinois.edu/tmp/dsl-tutorial.ova
+
+3. (Optionally) Check whether the image downloaded correctly using the
+   md5sum command line tool (Linux/OS X). On Windows, use this
+   tool:
+
+   http://www.pc-tools.net/win32/md5sums/
+
+   Compare the computed checksum with the following value:
+   a49989f216970d4b8842eba566a392a6
+
+   Only proceed once the two match. If they don't, delete the file and
+   retry the download.
+
+4. Open VirtualBox, click "File > Import Appliance", select the
+   downloaded image and just click "Next" a few times.  Once imported,
+   double-click on the virtual machine to make sure it starts. After a
+   little while, you should see a simple desktop environment.
+
+5. Once all these steps complete successfully, congratulations! You are
+   good to go. I'm looking forward to seeing you at the tutorial.
+
+See you soon,
+Andreas
+

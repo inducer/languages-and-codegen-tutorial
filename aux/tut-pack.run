@@ -31,4 +31,9 @@ echo "All done!"
 echo "------------------------------------------------------------"
 echo "Your tutorial materials are unpacked and ready for use,"
 echo "right here in the subdirectory $TUT_ID-tutorial-materials."
+echo
+echo "Type the following to get started:"
+echo "  cd $TUT_ID-tutorial-materials"
+echo "  jupyter notebook"
+echo
 echo "Hope you enjoy the tutorial!"
