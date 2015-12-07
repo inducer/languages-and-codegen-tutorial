@@ -4,6 +4,8 @@ set -e
 set -x
 setopt -o EXTENDED_GLOB
 
+TUT_ID=dsl
+
 mkdir -p dist
 
 ME=$(readlink -f "$0")
@@ -26,15 +28,14 @@ for nb in [0-9]*/**/*ipynb; do
   PROCESSED_IPYNB="${CONV_BASE}.ipynb"
   "$MYDIR/ipython-demo-tools/prepare-ipynb" remove-marks "$nb" "$PROCESSED_IPYNB"
   # if ! test -f "$CONV_PY" || test "$nb" -nt "$CONV_PY"; then
-  #   ipython nbconvert "$PROCESSED_IPYNB" --to=python "--output=${CONV_BASE}"
+  #   jupyter-nnbconvert "$PROCESSED_IPYNB" --to=python "--output=${CONV_BASE}"
   # fi
   # if ! test -f "$CONV_HTML" || test "$nb" -nt "$CONV_HTML"; then
-  #   ipython nbconvert "$PROCESSED_IPYNB" --to=html "--output=${CONV_BASE}"
+  #   jupyter-nnbconvert "$PROCESSED_IPYNB" --to=html "--output=${CONV_BASE}"
   # fi
   if ! test -f "$CONV_PDF" || test "$nb" -nt "$CONV_PDF"; then
-    ipython nbconvert "$PROCESSED_IPYNB" --to=latex --post=PDF "--output=${CONV_BASE}"
+    jupyter-nbconvert "$PROCESSED_IPYNB" --to=pdf "--output=${CONV_BASE}"
 
-    mv "${TRUNK}.pdf" $CONV_DIR
     rm -f "${CONV_BASE}.tex"
     rm -Rf "${CONV_BASE}_files"
     rm -f "${TRUNK}.log" "${TRUNK}.out" "${TRUNK}.aux"
@@ -62,9 +63,9 @@ for i in slides/out/[0-9]*pdf; do
   mkdir_and_cp $i dist/${bn%.pdf}/0-slides.pdf
 done
 
-cp -R --reflink dist sc15-tutorial-materials
-cp -R --reflink cleared sc15-tutorial-materials
-rm -f sc15-tutorial-materials-dist.zip
-zip -r sc15-tutorial-materials-dist.zip sc15-tutorial-materials
-rm -Rf sc15-tutorial-materials
+cp -R --reflink dist $TUT_ID-tutorial-materials
+cp -R --reflink cleared $TUT_ID-tutorial-materials
+rm -f $TUT_ID-tutorial-materials-dist.zip
+zip -r $TUT_ID-tutorial-materials-dist.zip $TUT_ID-tutorial-materials
+rm -Rf $TUT_ID-tutorial-materials
 
