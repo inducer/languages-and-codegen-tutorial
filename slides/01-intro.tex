@@ -26,7 +26,7 @@
 % {{{ front matter
 % -----------------------------------------------------------------------------
 
-\title{
+\title[DSL to High Performance]{
   Domain-Specific
   Languages to High Performance: Code Generation and Transformation in
   Python\\
@@ -49,13 +49,36 @@
 % -----------------------------------------------------------------------------
 \section{Outline}
 % -----------------------------------------------------------------------------
+\begin{frame}{High Performance: What?}
+  What is\dots {\huge High Performance Computing?}
+
+  \bigskip
+  The \emph{science} of making code \alt<2->{{\color{red}\sout{actually
+  fast.}}}{actually fast.}
+
+  \uncover<3->{{\color{green}achieve the \textbf{best} performance possible on a given machine.}}
+
+  \uncover<4->{
+    \begin{itemize}
+      \item {\color{red}\textbf{NO:} I made my code 300,000x faster.}
+      \item {\color{green}\textbf{YES:} My code achieves 37\% of the
+      achievable floating point capability of my machine.}
+    \end{itemize}
+  }
+  \uncover<5->{
+    \textbf{Performance:} Measure $\to$ Understand $\to$ Improve $\to$
+    Measure $\to$ Understand $\to$ Improve $\to \cdots$
+  }
+
+\end{frame}
+% -----------------------------------------------------------------------------
 \begin{frame}{Setting}
   High-performance code is \textbf{challenging}:
   \begin{itemize}
     \item designed to push machines, models, and methods to the limits
       of their capabilities
 
-    \item often put together on a (comparatively) shoestring budget
+    %\item often put together on a (comparatively) shoestring budget
 
     \item often repurposed $\rightarrow$ high demands on
     flexibility
@@ -64,6 +87,9 @@
 \end{frame}
 % -----------------------------------------------------------------------------
 \begin{frame}{Goals}
+  \textbf{Recipe:} Split `\textbf{math work}' from `\textbf{performance work}'
+
+  \bigskip
   \begin{itemize}
     \item Build Mathematically-oriented mini-languages (`DSLs')
     \item Apply domain-specific optimizations and transformations
@@ -73,16 +99,20 @@
   \uncover<+->{}
   \uncover<+->{%
     \begin{tikzpicture} [overlay]
-      \node [below left=1cm of current page.north east, draw,drop shadow,fill=white,
+      \node [above left=1cm of current page.south east, draw,drop shadow,fill=white,
       inner xsep=0.5cm,inner ysep=0.5cm,thick, text
       width=0.7\textwidth]
         {%
-          \textbf{`Don't be limited by what's available.'}
+          \textbf{Necessary consequence:}
+
+          The computation itself is now \emph{data} that we will
+          manipulate programmatically.
         } ;
     \end{tikzpicture}
   }
 \end{frame}
 % -----------------------------------------------------------------------------
+\def\excl#1{{\color<2->{lightgray}#1}}
 \begin{frame}
   \begin{columns}
     \column{0.5\textwidth}
@@ -90,10 +120,10 @@
     \setlength{\itemsep}{0.0in}
     \item Introduction
       \begin{itemize}
-        \item Why Python?
-        \item IPython
-        \item Python
-        \item \texttt{numpy}
+        %\item Why Python?
+        \item \excl{IPython}
+        \item \excl{Python}
+        \item \excl{\texttt{numpy}}
       \end{itemize}
     \item Building languages
       \begin{itemize}
@@ -106,7 +136,7 @@
       \begin{itemize}
         \item Execution model
         \item OpenCL + Python
-        \item High-performance primitives
+        \item \excl{High-performance primitives}
       \end{itemize}
     \end{itemize}
 
@@ -114,27 +144,28 @@
     \begin{itemize}
     \item Case studies
       \begin{itemize}
-        \item \texttt{numpy}: broadcasting
+        \item \excl{\texttt{numpy}: broadcasting}
         \item \texttt{numpy}: \texttt{einsum}
-        \item UFL
+        \item \excl{UFL}
       \end{itemize}
-    \item Generating C
+    \item \excl{Generating C}
       \begin{itemize}
-        \item Using templating engines
-        \item Types and hybrid code
-        \item Structured code generation (ASTs)
+        \item \excl{Using templating engines}
+        \item \excl{Types and hybrid code}
+        \item \excl{Structured code generation (ASTs)}
       \end{itemize}
     \item Code generation via Loopy
       \begin{itemize}
         \item Loop polyhedra
         \item Instructions and ordering
-        \item Loop transformation, and data layout
+        \item \excl{Loop transformation, and data layout}
         \item Generating instructions from DSLs
       \end{itemize}
     \end{itemize}
   \end{columns}
 \end{frame}
 % -----------------------------------------------------------------------------
+\begin{comment}
 \section{Why Python?}
 % -----------------------------------------------------------------------------
 \begin{frame}{Why Python?}
@@ -170,6 +201,9 @@
   \item performant enough for large, complicated systems
   \end{itemize}
 \end{frame}
+\end{comment}
+% -----------------------------------------------------------------------------
+\section{Software Overview}
 % -----------------------------------------------------------------------------
 \begin{frame}{Getting the software}
   Core packages:
@@ -180,21 +214,23 @@
     \item PyOpenCL: \url{https://github.com/pyopencl/pyopencl}
     \item loopy: \url{https://github.com/inducer/loopy}
   \end{itemize}
-  Supporting packages:
-  \begin{itemize}
-    \item matplotlib: \url{http://www.matplotlib.org}
-    \item mako: \url{http://www.makotemplates.org}
-    \item cgen: \url{https://github.com/inducer/cgen}
-  \end{itemize}
+  % Supporting packages:
+  % \begin{itemize}
+  %   \item matplotlib: \url{http://www.matplotlib.org}
+  %   \item mako: \url{http://www.makotemplates.org}
+  %   \item cgen: \url{https://github.com/inducer/cgen}
+  % \end{itemize}
   All open-source under MIT/BSD licenses.
 \end{frame}
 % -----------------------------------------------------------------------------
+\begin{comment}
 \begin{frame}{Installing the software}
   \begin{itemize}
     \item Demo: \texttt{virtualenv}
     \item Demo: \texttt{pip}
   \end{itemize}
 \end{frame}
+\end{comment}
 % -----------------------------------------------------------------------------
 \begin{frame}
   \bigncentered{DEMO TIME}
