@@ -6,6 +6,9 @@ setopt -o EXTENDED_GLOB
 
 TUT_ID=dsl
 
+PDF_OUTPUT=0
+HTML_OUTPUT=1
+
 mkdir -p dist
 
 ME=$(readlink -f "$0")
@@ -30,15 +33,11 @@ for nb in [0-9]*/**/*ipynb; do
   # if ! test -f "$CONV_PY" || test "$nb" -nt "$CONV_PY"; then
   #   jupyter-nnbconvert "$PROCESSED_IPYNB" --to=python "--output=${CONV_BASE}"
   # fi
-  # if ! test -f "$CONV_HTML" || test "$nb" -nt "$CONV_HTML"; then
-  #   jupyter-nnbconvert "$PROCESSED_IPYNB" --to=html "--output=${CONV_BASE}"
-  # fi
-  if ! test -f "$CONV_PDF" || test "$nb" -nt "$CONV_PDF"; then
-    jupyter-nbconvert "$PROCESSED_IPYNB" --to=pdf "--output=${CONV_BASE}"
-
-    rm -f "${CONV_BASE}.tex"
-    rm -Rf "${CONV_BASE}_files"
-    rm -f "${TRUNK}.log" "${TRUNK}.out" "${TRUNK}.aux"
+  if [[ "$HTML_OUTPUT" = "1" ]]  && (! test -f "$CONV_HTML" || test "$nb" -nt "$CONV_HTML"); then
+    python $(which jupyter-nbconvert) "$PROCESSED_IPYNB" --to=html "--output=${CONV_BASE}"
+  fi
+  if [[ "$PDF_OUTPUT" = "1" ]] && (! test -f "$CONV_PDF" || test "$nb" -nt "$CONV_PDF"); then
+    python $(which jupyter-nbconvert) "$PROCESSED_IPYNB" --to=pdf "--output=${CONV_BASE}"
   fi
 
   CONV_DIR="cleared/$DIR"
