@@ -10,6 +10,7 @@ PDF_OUTPUT=0
 HTML_OUTPUT=1
 
 mkdir -p dist
+rm -Rf cleared
 
 ME=$(readlink -f "$0")
 DIR=$(dirname "$ME")
