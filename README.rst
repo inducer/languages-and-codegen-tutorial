@@ -1,5 +1,5 @@
-From Description to Code Generation: Building High Performance Tools with Python
-================================================================================
+Domain-specific languages to Manycore and GPU: Building High-Performance Tools with Python
+==========================================================================================
 
 A tutorial on Domain-Specific Languages
 ---------------------------------------
