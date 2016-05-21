@@ -20,7 +20,7 @@ echo "One second, fetching your tutorial materials..."
 echo "------------------------------------------------------------"
 echo "Downloading..."
 set -x
-rm -f sc15-tutorial-materials-dist.zip
+rm -f $TUT_ID-tutorial-materials-dist.zip
 curl -O $URL
 echo "Unpacking..."
 unzip -q $TUT_ID-tutorial-materials-dist.zip
@@ -36,4 +36,4 @@ echo "Type the following to get started:"
 echo "  cd $TUT_ID-tutorial-materials"
 echo "  jupyter notebook"
 echo
-echo "Hope you enjoy the tutorial!"
+echo "Enjoy the tutorial!"

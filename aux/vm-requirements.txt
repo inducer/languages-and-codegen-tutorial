@@ -1,0 +1,5 @@
+clang-3.8
+pocl
+graphviz
+
+see pystuff-requirements.txt

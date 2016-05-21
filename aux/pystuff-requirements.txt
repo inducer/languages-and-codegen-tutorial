@@ -2,6 +2,7 @@ mako
 git+git://github.com/inducer/pytools
 git+git://github.com/inducer/pymbolic
 git+git://github.com/inducer/cgen
+git+git://github.com/inducer/genpy
 git+git://github.com/sympy/sympy
 git+git://github.com/pyopencl/pyopencl
 git+git://github.com/inducer/islpy
