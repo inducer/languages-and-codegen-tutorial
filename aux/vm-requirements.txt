@@ -1,5 +1,8 @@
 clang-3.8
 pocl
+  with LLC_HOST_CPU=i686 LLVM_CONFIG=/usr/bin/llvm-config-3.8 ./configure --prefix=/opt/pocl-build
 graphviz
 
 see pystuff-requirements.txt
+
+dd zeros
