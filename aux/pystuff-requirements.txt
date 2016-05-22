@@ -3,10 +3,10 @@ git+git://github.com/inducer/pytools
 git+git://github.com/inducer/pymbolic
 git+git://github.com/inducer/cgen
 git+git://github.com/inducer/genpy
-git+git://github.com/sympy/sympy
+sympy
 git+git://github.com/pyopencl/pyopencl
 git+git://github.com/inducer/islpy
-git+git://github.com/inducer/loopy
+git+git://github.com/inducer/loopy@8179816626dcbaae9a5e7a10491ad292fb5cd226
 
 hg+https://bitbucket.org/inducer/f2py
 git+git://github.com/inducer/ply
