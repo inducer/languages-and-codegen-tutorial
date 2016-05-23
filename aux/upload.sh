@@ -4,28 +4,25 @@ set -e
 set -x
 
 TUT_ID=dsl
+URL=https://andreask.cs.illinois.edu/tutorial/$TUT_ID-tutorial-materials-dist.zip
+GITHUB_URL=https://github.com/inducer/languages-and-codegen-tutorial
+TGT=tiker.net:public_html/tutorial
 
-URL=http://andreask.cs.illinois.edu/tmp/$TUT_ID-tutorial-materials-dist.zip
+sed s,GITHUB_URL,$GITHUB_URL, index.md | \
+  sed s,BROWSE_PATH,$TUT_ID-tutorial-materials/dist/, | \
+  sed s,ZIP_NAME,$TUT_ID-tutorial-materials-dist.zip, | \
+  pandoc -t html - > index.html
+rsync -rav index.html $TGT/
+rm index.html
+
 cp tut-pack.run tut-pack-custom.run
 sed -i s,MY_TUT_ID,$TUT_ID, tut-pack-custom.run
 sed -i s,MYURL,$URL, tut-pack-custom.run
-TGT=tiker.net:public_html/tmp
-
-rsync -rav --delete ../dist $TGT/$TUT_ID-tutorial-materials
-rsync -rav tut-pack-custom.run $TGT/$TUT_ID-tut-pack.run
-rsync -rav ../$TUT_ID-tutorial-materials-dist.zip $TGT
-
-URL=http://relate.cs.illinois.edu/dl/$TUT_ID/$TUT_ID-tutorial-materials-dist.zip
-cp tut-pack.run tut-pack-custom.run
-sed -i s,MY_TUT_ID,$TUT_ID, tut-pack-custom.run
-sed -i s,MYURL,$URL, tut-pack-custom.run
-TGT=class@rl:dl/$TUT_ID-tutorial
-
-rsync -rav --delete ../dist $TGT/materials
-rsync -rav tut-pack-custom.run $TGT/$TUT_ID-tut-pack.run
-rsync -rav ../$TUT_ID-tutorial-materials-dist.zip $TGT
-ssh class@rl "chmod a+rX dl -R"
-
+rsync -rav tut-pack-custom.run $TGT/tut-pack.run
 rm tut-pack-custom.run
+
+rsync -rav --progress ../$TUT_ID-tutorial-materials-dist.zip $TGT
+rsync -rav --progress --delete ../dist $TGT/$TUT_ID-tutorial-materials
+
 
 echo "COMPLETED"
