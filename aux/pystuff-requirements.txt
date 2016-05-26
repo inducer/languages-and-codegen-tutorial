@@ -6,7 +6,7 @@ git+git://github.com/inducer/genpy
 sympy
 git+git://github.com/pyopencl/pyopencl
 git+git://github.com/inducer/islpy
-git+git://github.com/inducer/loopy@8179816626dcbaae9a5e7a10491ad292fb5cd226
+git+git://github.com/inducer/loopy
 
 hg+https://bitbucket.org/inducer/f2py
 git+git://github.com/inducer/ply
