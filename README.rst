@@ -42,7 +42,7 @@ to get started:
 
 2. Download the machine image itself:
 
-   http://andreask.cs.illinois.edu/tmp/sc15-tutorial.ova
+   http://andreask.cs.illinois.edu/tmp/dsl-tutorial.ova
 
 3. (Optionally) Check whether the image downloaded correctly using the
    md5sum command line tool (Linux/OS X). On Windows, use this
