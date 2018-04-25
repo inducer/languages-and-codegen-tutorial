@@ -26,7 +26,7 @@ The tutorial also includes a brief introductory section to familiarize you with
 the Python and numpy syntax.
 
 This material is an updated version of a
-`tutorial <http://sc15.supercomputing.org/schedule/event_detail?evid=tut174>`_ I
+`tutorial <http://sc15.supercomputing.org/schedule/event_detail-evid=tut174.html>`_ I
 presented at `Supercomputing '15 <http://sc15.supercomputing.org>`_ in Austin.
 
 Virtual machine image
